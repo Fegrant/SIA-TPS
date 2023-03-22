@@ -7,6 +7,8 @@ from gamecolor import Color
 import copy
 import time
 import sys
+import os
+import csv
 
 class Solver:
     def __init__(self):
@@ -34,8 +36,19 @@ class Solver:
         print('- Time elapsed: {}'.format(time_elapsed))
         if heuristic is not None:
             print('- Heuristic: {}'.format(heuristic))
-        print()
+        print('\n')
 
+
+    def to_file(self, algorithm: str, grid_size: int, cost: int, expanded_nodes: int, frontier_nodes: int, time_elapsed, heuristic=None):
+        if not os.path.exists('results'):
+            os.makedirs('results')
+        if not os.path.isfile('results/output{}.csv'.format(grid_size)):
+            with open('results/output{}.csv'.format(grid_size), 'a', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow(['Algorithm', 'Cost', 'Expanded Nodes', 'Frontier Nodes', 'Time elapsed', 'Heuristic'])
+        with open('results/output{}.csv'.format(grid_size), 'a', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow([algorithm, cost, expanded_nodes, frontier_nodes, time_elapsed, heuristic])
 
     def uninformed_method(self, algorithm, grid_size: int, grid, color_amount: int, turns: int, input_file: str = None):
         self.num_explored = 0
@@ -94,7 +107,7 @@ class Solver:
         end_time = time.time()
 
         algorithm = algorithm.name
-        self.print_game_statistics(algorithm, result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time)
+        self.to_file(algorithm, len(grid), cost, self.num_explored, len(frontier.frontier), end_time - start_time)
         for cell in starting_zone:
             grid[cell[0]][cell[1]] = starting_color
 
@@ -150,7 +163,7 @@ class Solver:
             # Add neighbors to frontier
             for action, state in self.neighbors(n[0].state):
                 if not frontier.contains_state(state) and state not in self.explored:
-                    child = Node(state=state, parent=n, action=action)
+                    child = Node(state=state, parent=n, action=action, cost=n[0].cost + 1)
                     if algorithm == 'greedy':
                         if heuristic == 'remaining_colors_heuristic':
                             frontier.add((child, globals()[heuristic](child.state.grid, color_amount)))
@@ -160,14 +173,14 @@ class Solver:
                             frontier.add((child, globals()[heuristic](grid_size, child.state.current_color_cells)))
                     elif algorithm == 'astar':
                         if heuristic == 'remaining_colors_heuristic':
-                            frontier.add((child, child.get_current_cost() + globals()[heuristic](child.state.grid, color_amount)))
+                            frontier.add((child, child.cost + globals()[heuristic](child.state.grid, color_amount)))
                         elif heuristic == 'color_fraction_heuristic':
-                            frontier.add((child, child.get_current_cost() + globals()[heuristic](child.state.grid, grid_size)))
+                            frontier.add((child, child.cost + globals()[heuristic](child.state.grid, grid_size)))
                         else:
-                            frontier.add((child, child.get_current_cost() + globals()[heuristic](grid_size, child.state.current_color_cells)))
+                            frontier.add((child, child.cost + globals()[heuristic](grid_size, child.state.current_color_cells)))
                             
         end_time = time.time()
-        self.print_game_statistics(algorithm, result, cost, self.num_explored, len(frontier.frontier), actions, end_time - start_time, heuristic)
+        self.to_file(algorithm, len(grid), cost, self.num_explored, len(frontier.frontier), end_time - start_time, heuristic)
         for cell in starting_zone:
             grid[cell[0]][cell[1]] = starting_color
 
