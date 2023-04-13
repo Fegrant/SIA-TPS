@@ -9,6 +9,9 @@ from cross import crossover_one_point, crossover_two_point
 def euclidean(a, b):
     return np.linalg.norm(a - b)
 
+def diversity(population):
+    unique_chromosomes = set(tuple(chromosome) for chromosome in population)
+    return len(unique_chromosomes) / len(population)
 
 
 def genetic_algorithm(target_color, palette=None, population_size=100, num_elite=5, num_generations=100, mutation_probability=0.05):
