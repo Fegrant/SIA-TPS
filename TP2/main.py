@@ -1,19 +1,15 @@
-import random
 import numpy as np
 
 from color import color
 from fitness import calculate_fitness
 from selection import select_elite, select_roulette
 from utils.generate import generate_initial_population
+from cross import crossover_one_point, crossover_two_point
 
 def euclidean(a, b):
     return np.linalg.norm(a - b)
 
-def crossover_one_point(parent1, parent2):
-    point = random.randint(1, len(parent1) - 1)
-    child1 = np.concatenate((parent1[:point], parent2[point:]))
-    child2 = np.concatenate((parent2[:point], parent1[point:]))
-    return child1, child2
+
 
 def genetic_algorithm(target_color, palette=None, population_size=100, num_elite=5, num_generations=100, mutation_probability=0.05):
     

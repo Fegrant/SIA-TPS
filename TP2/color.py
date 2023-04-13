@@ -2,12 +2,10 @@
 
 class Color:
     def __init__(self, red, green, blue):
-        self.red = red
-        self.green = green
-        self.blue = blue
+        self.rgb = [red, green, blue]
     
     def rgb(self):
-        return [self.red, self.green, self.blue]
+        return self.rgb
 
     def __str__(self):
         return "({}, {}, {})".format(self.red, self.green, self.blue)
