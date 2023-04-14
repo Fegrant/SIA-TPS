@@ -1,10 +1,9 @@
 import numpy as np
 
-from color import color
 from fitness import calculate_fitness
 from selection import select_elite, select_roulette
 from utils.generate import generate_initial_population
-from cross import crossover_one_point, crossover_two_point
+from cross import crossover_one_point
 
 def euclidean(a, b):
     return np.linalg.norm(a - b)
@@ -13,11 +12,9 @@ def diversity(population):
     unique_chromosomes = set(tuple(chromosome) for chromosome in population)
     return len(unique_chromosomes) / len(population)
 
-
 def genetic_algorithm(target_color, palette=None, population_size=100, num_elite=5, num_generations=100, mutation_probability=0.05):
-    
-    if palette is None:
-        population = generate_initial_population(population_size)
+
+    population = generate_initial_population(population_size)
     
     for i in range(num_generations):
         elite = select_elite(population, num_elite)

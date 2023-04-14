@@ -1,0 +1,2 @@
+Algorithm,Result,Cost,Expanded Nodes,Frontier Nodes,Time elapsed,Heuristic
+DFS,WIN,3,12,4,0.0020020008087158203,

@@ -10,7 +10,19 @@ def select_roulette(population, num_selected):
     fitness_scores = [calculate_fitness(chromosome) for chromosome in population]
     fitness_sum = sum(fitness_scores)
     probabilities = [fitness / fitness_sum for fitness in fitness_scores]
-    selected_indices = np.random.choice(len(population), num_selected, p=probabilities)
+    cumulative_probabilities = np.cumsum(probabilities)
+    selected_indices = []
+    for i in range (num_selected):
+        point = np.random.random(0 , 1)
+        for j in range(len(cumulative_probabilities)):
+            if j - 1 < 0:
+                tail = 0
+            else: 
+                tail = cumulative_probabilities[j-1] 
+            
+            if tail < point <= cumulative_probabilities[j]:
+                selected_indices.append(j)
+        # selected_indices = np.random.choice(len(population), num_selected, p=cumulative_probabilities)
     return [population[i] for i in selected_indices]
 
 def select_universal(population, num_selected):
@@ -18,11 +30,10 @@ def select_universal(population, num_selected):
     fitness_sum = sum(fitness_scores)
     probabilities = [fitness / fitness_sum for fitness in fitness_scores]
     cumulative_probabilities = np.cumsum(probabilities)
-    step_size = fitness_sum / num_selected
-    start_point = np.random.uniform(0, step_size)
     selected_indices = []
-    for i in range(num_selected):
-        point = start_point + i * step_size
+    for i in range(num_selected - 1):
+        start_point = np.random.uniform(0, 1)
+        point = start_point + i / num_selected
         index = np.searchsorted(cumulative_probabilities, point)
         selected_indices.append(index)
     return [population[i] for i in selected_indices]

@@ -1,0 +1,10 @@
+{
+    "palette": [[180, 180, 180], [255, 0, 0], [0, 255, 0]],
+    "objective": [200, 200, 200],
+    "selection": {"parents": "elite", "new_gen": "roulette"},
+    "max_population_size": 5000,
+    "break_conditions": [{"name": "generations", "qty": 500}],
+    "cross_overs": "one_point",
+    "mutation": {"name": "one_gen" , "probability": 0.5},
+    "select_amount_per_generation": 5
+}
