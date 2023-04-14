@@ -13,16 +13,9 @@ def select_roulette(population, num_selected):
     cumulative_probabilities = np.cumsum(probabilities)
     selected_indices = []
     for i in range (num_selected):
-        point = np.random.random(0 , 1)
-        for j in range(len(cumulative_probabilities)):
-            if j - 1 < 0:
-                tail = 0
-            else: 
-                tail = cumulative_probabilities[j-1] 
-            
-            if tail < point <= cumulative_probabilities[j]:
-                selected_indices.append(j)
-        # selected_indices = np.random.choice(len(population), num_selected, p=cumulative_probabilities)
+        point = np.random.random(0, 1)
+        index = np.searchsorted(cumulative_probabilities, point)
+        selected_indices.append(index)
     return [population[i] for i in selected_indices]
 
 def select_universal(population, num_selected):
