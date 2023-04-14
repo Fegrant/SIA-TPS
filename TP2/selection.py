@@ -12,3 +12,28 @@ def select_roulette(population, num_selected):
     probabilities = [fitness / fitness_sum for fitness in fitness_scores]
     selected_indices = np.random.choice(len(population), num_selected, p=probabilities)
     return [population[i] for i in selected_indices]
+
+def select_universal(population, num_selected):
+    fitness_scores = [calculate_fitness(chromosome) for chromosome in population]
+    fitness_sum = sum(fitness_scores)
+    probabilities = [fitness / fitness_sum for fitness in fitness_scores]
+    cumulative_probabilities = np.cumsum(probabilities)
+    step_size = fitness_sum / num_selected
+    start_point = np.random.uniform(0, step_size)
+    selected_indices = []
+    for i in range(num_selected):
+        point = start_point + i * step_size
+        index = np.searchsorted(cumulative_probabilities, point)
+        selected_indices.append(index)
+    return [population[i] for i in selected_indices]
+
+# TODO: tournament_size = M, la cantidad de individuos a elegir de los N disponibles en la poblacion. La pregunta es, que valor tiene M?
+def select_deterministic_tournament(population, num_selected, tournament_size):
+    selected_indices = []
+    while len(selected_indices) < num_selected:
+        tournament_indices = np.random.choice(len(population), tournament_size, replace=False)
+        tournament = [population[i] for i in tournament_indices]
+        tournament_fitnesses = [calculate_fitness(chromosome) for chromosome in tournament]
+        winner_index = tournament_indices[np.argmax(tournament_fitnesses)]
+        selected_indices.append(winner_index)
+    return [population[i] for i in selected_indices]
