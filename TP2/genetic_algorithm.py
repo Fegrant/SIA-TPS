@@ -1,3 +1,5 @@
+import numpy as np
+
 from utils.generate import generate_initial_population
 
 class GeneticAlgorithm:
@@ -29,3 +31,33 @@ class GeneticAlgorithm:
             population = new_population
         best_chromosome = max(population, key=lambda x: calculate_fitness(x, target_color, palette))
         return best_chromosome
+    
+def fill_all(self, parents, k, n):
+    children = []
+    for i in range(k):
+        parent1, parent2 = np.random.sample(parents, 2)
+        child = self.cross_over(parent1, parent2)
+        self.mutation(child)
+        children.append(child)
+    population = parents + children
+    population.sort(key=calculate_fitness, reverse=True)
+    new_population = population[:n]
+    return new_population
+
+    
+def fill_new_over_actual(self, parents, k, n):
+    children = []
+    for i in range(k):
+        parent1, parent2 = np.random.sample(parents, 2)
+        child = self.cross_over(parent1, parent2)
+        self.mutation(child)
+        children.append(child)
+    population = parents + children
+    if k > n:
+        population.sort(key=calculate_fitness, reverse=True)
+        new_population = population[:n]
+    else:
+        selected_children = np.random.sample(children, k)
+        selected_parents = np.random.sample(parents, n-k)
+        new_population = selected_children + selected_parents
+    return new_population
