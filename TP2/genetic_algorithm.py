@@ -1,6 +1,8 @@
 from audioop import cross
 import random
+from time import time
 import numpy as np
+from datetime import datetime
 
 import sys
 import os
@@ -69,8 +71,9 @@ class GeneticAlgorithm:
 
 def create_output_file():
     argc = len(sys.argv)
-    if argc != 2:
-        raise('Output folder must be provided for execution data')
+    sub_directory = ''
+    if argc == 2:
+        sub_directory = sys.argv[1]
     
     # Options are:
     # 'i': implementations
@@ -82,33 +85,40 @@ def create_output_file():
     root_directory = 'results'
     directory = root_directory
     filename = ''
+    timestamp = datetime.now().timestamp()
 
     if not os.path.exists('results'):
         os.makedirs('results')
 
-    match sys.argv[1]:
+    match sub_directory:
         case 'i':
             directory += '/implementations'
             if not os.path.exists(directory):
                 os.makedirs(directory)
-            filename = '{}.csv'.format(Config.implementation)
+            filename = '{}_{}.csv'.format(Config.implementation, timestamp)
         case 'c':
             directory += '/crosses'
             if not os.path.exists(directory):
                 os.makedirs(directory)
-            filename = '{}-{}.csv'.format(Config.cross_over['name'], Config.cross_over['probability'])
+            filename = '{}-{}_{}.csv'.format(Config.cross_over['name'], Config.cross_over['probability'], timestamp)
         case 'm':
+            directory += '/mutations'
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+            filename = '{}-{}_{}.csv'.format(Config.mutation['name'], Config.mutation['probability'], timestamp)
+        case 's':
             directory += '/selections'
             if not os.path.exists(directory):
                 os.makedirs(directory)
-            filename = '{}-p{}_{}-g{}.csv'.format(Config.selections['parents']['name'], Config.selections['parents']['probability'], Config.selections['new_gen']['name'], Config.selections['parents']['probability'])
+            filename = '{}-{}_{}-{}_{}.csv'.format(Config.selections['parents']['name'], Config.selections['parents']['amount'], Config.selections['new_gen']['name'], Config.selections['parents']['amount'], timestamp)
         case _:
             directory += '/other'
             if not os.path.exists(directory):
                 os.makedirs(directory)
-            filename = 'other.csv'
+            filename = 'other_{}.csv'.format(timestamp)
     
     return (directory, filename)
+
 
 def fill_all(old_population, children):
     population = old_population + children
