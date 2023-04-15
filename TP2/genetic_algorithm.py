@@ -2,6 +2,10 @@ from audioop import cross
 import random
 import numpy as np
 
+import sys
+import os
+import csv
+
 from utils.config import Config
 from utils.generate import generate_initial_population
 from fitness import calculate_fitness
@@ -19,6 +23,8 @@ new_gen_selects = {
 
 class GeneticAlgorithm:
     def run(self):
+        (directory, filename) = create_output_file()
+        generations_data = []
         generation = 0
         population = generate_initial_population(Config.max_population_size)
 
@@ -42,28 +48,68 @@ class GeneticAlgorithm:
             
             new_population = new_gen_selects[Config.implementation](population, children)
             population = new_population
+
+            generations_data.append({
+                'generation': generation,
+                'min_fitness': calculate_fitness(min(population, key=lambda chromosome: calculate_fitness(chromosome.get_gens())).get_gens()),
+                'avg_fitness': 0,
+                'max_fitness': calculate_fitness(max(population, key=lambda chromosome: calculate_fitness(chromosome.get_gens())).get_gens()),
+                'diversity': 0
+                })
             generation += 1
         
+        with open(os.path.join(directory, filename), 'w', encoding='UTF-8', newline='') as file:
+            csvwriter = csv.writer(file)
+            csvwriter.writerow(['generation', 'min_fitness', 'avg_fitness', 'max_fitness', 'diversity'])
+            for gen_data in generations_data:
+                csvwriter.writerow(gen_data.values())
+        
+        # TODO: Finish execution on acceptable solution or by structure (same values over multiple generations)
         return max(population, key=lambda chromosome: calculate_fitness(chromosome.get_gens()))
 
-        # if self.break_condition == "generations":
-        #     return self.run_generations(target_color)
-
-        # population = generate_initial_population(self.population_size)
-        # for i in range(self.num_generations):
-        #     elite = select_elite(population, num_elite)
-        #     new_population = elite
-        #     while len(new_population) < population_size:
-        #         parent1, parent2 = select_roulette(population, 2)
-        #         child1, child2 = crossover_one_point(parent1, parent2)
-        #         # child1 = mutate_swap(child1, mutation_probability)
-        #         # child2 = mutate_swap(child2, mutation_probability)
-        #         new_population.append(child1)
-        #         new_population.append(child2)
-        #     population = new_population
-        # best_chromosome = max(population, key=lambda x: calculate_fitness(x, target_color, palette))
-        # return best_chromosome
+def create_output_file():
+    argc = len(sys.argv)
+    if argc != 2:
+        raise('Output folder must be provided for execution data')
     
+    # Options are:
+    # 'i': implementations
+    # 'c': crosses
+    # 'm': mutations
+    # 's': selections
+    # default: other
+
+    root_directory = 'results'
+    directory = root_directory
+    filename = ''
+
+    if not os.path.exists('results'):
+        os.makedirs('results')
+
+    match sys.argv[1]:
+        case 'i':
+            directory += '/implementations'
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+            filename = '{}.csv'.format(Config.implementation)
+        case 'c':
+            directory += '/crosses'
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+            filename = '{}-{}.csv'.format(Config.cross_over['name'], Config.cross_over['probability'])
+        case 'm':
+            directory += '/selections'
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+            filename = '{}-p{}_{}-g{}.csv'.format(Config.selections['parents']['name'], Config.selections['parents']['probability'], Config.selections['new_gen']['name'], Config.selections['parents']['probability'])
+        case _:
+            directory += '/other'
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+            filename = 'other.csv'
+    
+    return (directory, filename)
+
 def fill_all(old_population, children):
     population = old_population + children
     return select_methods[Config.selections['new_gen']['name']](population, Config.max_population_size)

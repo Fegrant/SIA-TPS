@@ -8,6 +8,9 @@ class Chromosome:
 
     def get_gens(self):
         return self.gens
+    
+    def get_fitness(self):
+        return self.fitness
 
     def set_gens(self, new_gens):
         self.gens = new_gens

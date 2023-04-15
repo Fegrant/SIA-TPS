@@ -23,5 +23,5 @@ def calculate_fitness(individual_gens):
     # Calculate Euclidean distance between the solution color and the desired color
     distance = np.linalg.norm(np.array(target_color) - np.array(new_color))
     # Return inverse distance as fitness score
-    return 1 / (1 + distance)
+    return (1 / (1 + distance)) * 1000
     
