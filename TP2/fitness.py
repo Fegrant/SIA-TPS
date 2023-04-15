@@ -3,7 +3,7 @@ from utils.config import Config
 
 def calculate_fitness(individual_gens):
     
-    target_color = Config.objective_color
+    target_color = Config.color_objective
     palette = Config.palette
 
     # Initialize the RGB values for the new color
@@ -21,7 +21,7 @@ def calculate_fitness(individual_gens):
     new_color = [int(new_red), int(new_green), int(new_blue)]
 
     # Calculate Euclidean distance between the solution color and the desired color
-    distance = np.linalg.norm(target_color - new_color)
+    distance = np.linalg.norm(np.array(target_color) - np.array(new_color))
     # Return inverse distance as fitness score
     return 1 / (1 + distance)
     

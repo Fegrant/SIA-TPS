@@ -12,6 +12,9 @@ class Chromosome:
     def set_gens(self, new_gens):
         self.gens = new_gens
 
+    def __str__(self) -> str:
+        return str(self.gens)
+
     # def set_rgb(self, red, green, blue):
     #     self.rgb = [red, green, blue]
 

@@ -9,6 +9,11 @@ Config.load_from_json("config.json")
 
 palette_color_amount = Config.get_palette_color_amount()
 
+cross_methods = {
+    "one_point": (lambda parent1, parent2: crossover_one_point(parent1, parent2)),
+    "uniform": (lambda parent1, parent2: crossover_uniform(parent1, parent2))
+}
+
 def crossover_one_point(parent1: Chromosome, parent2: Chromosome):
     point = random.randint(0, palette_color_amount)
 
@@ -18,8 +23,8 @@ def crossover_one_point(parent1: Chromosome, parent2: Chromosome):
     # child1.set_gens(np.append(parent1.get_gens[:point], parent2.get_gens[point:]))
     # child2.set_gens(np.append(parent1.get_gens[:point], parent2.get_gens[point:]))
 
-    child1 = Chromosome(copy.deepcopy(parent1.get_gens))
-    child2 = Chromosome(copy.deepcopy(parent2.get_gens))
+    child1 = Chromosome(copy.deepcopy(parent1.get_gens()))
+    child2 = Chromosome(copy.deepcopy(parent2.get_gens()))
 
     for i in range(point, palette_color_amount):
         child1.gens[i] = parent2.gens[i]

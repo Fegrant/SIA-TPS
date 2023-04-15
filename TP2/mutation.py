@@ -1,4 +1,5 @@
 import random
+import numpy as np
 
 from utils.config import Config
 from chromosome import Chromosome
@@ -12,27 +13,36 @@ Config.load_from_json("config.json")
 mutation_probability = Config.mutation["probability"]
 palette_color_amount = Config.get_palette_color_amount()
 
-def gene_mutation(individual: Chromosome, gene_index: int):
+mutation_methods = {
+    "one_gene": (lambda individual: gene_mutation(individual)),
+    "limited": (lambda individual: limited_multiple_gene_mutation(individual)),
+    "uniform": (lambda individual: uniform_multiple_gene_mutation(individual)),
+    "complete": (lambda individual: complete_mutation(individual))
+}
+
+def gene_mutation(individual: Chromosome):
     if random.uniform(0, 1) <= mutation_probability:
-        individual.gens[gene_index] = random.random()
+        gene_index = random.sample(range(palette_color_amount), k=1)
+        individual.gens[gene_index] = random.uniform(0, 1)
     return
 
 
-def limited_multiple_gene_mutation(individual: Chromosome, gens_to_mutate: int):
+def limited_multiple_gene_mutation(individual: Chromosome):
+    mutate_amount = Config.mutation["limited"]["amount"]
     if random.uniform(0, 1) <= mutation_probability:
-        gens_pos = random.sample(range(3), gens_to_mutate)
+        gens_pos = random.sample(range(palette_color_amount), k=mutate_amount)
         for pos in range(gens_pos):
-            individual.gens[pos] = random.random()
+            individual.gens[pos] = random.uniform(0, 1)
     return
 
 
 def uniform_multiple_gene_mutation(individual: Chromosome):
-    for pos in range(3):
+    for pos in range(palette_color_amount):
         if random.uniform(0, 1) <= mutation_probability:
-            individual.gens[pos] = random.random()
+            individual.gens[pos] = random.uniform(0, 1)
     return
 
 
 def complete_mutation(individual: Chromosome):
     if random.uniform(0, 1) <= mutation_probability:
-        individual.set_gens(random.random() for _ in range(palette_color_amount))
+        individual.set_gens(random.uniform(0, 1) for _ in range(palette_color_amount))

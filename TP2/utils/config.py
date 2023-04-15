@@ -1,14 +1,16 @@
 import json
 
+from sys import implementation
+
 class Config:
     palette = None
     color_objective = None
-    selection = None
+    selections = None
     max_population_size = None
-    break_condition = None
+    max_generations = None
     cross_over = None
     mutation = None
-    select_amount_per_generation = None
+    implementation = None
     
     @staticmethod
     def load_from_json(json_file):
@@ -18,12 +20,12 @@ class Config:
             data = json.load(json_file)
         Config.palette = data['palette']
         Config.color_objective = data['color_objective']
-        Config.selection = data['selection']
+        Config.selections = data['selections']
         Config.max_population_size = data['max_population_size']
-        Config.break_condition = data['break_condition']
+        Config.max_generations = data['max_generations']
         Config.cross_over = data['cross_over']
         Config.mutation = data['mutation']
-        Config.select_amount_per_generation = data['select_amount_per_generation']
+        Config.implementation = data['implementation']
     
     @staticmethod
     def get_palette_color_amount():
