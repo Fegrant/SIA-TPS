@@ -1,4 +1,4 @@
-from audioop import cross
+from math import log
 import random
 from time import time
 import numpy as np
@@ -10,6 +10,7 @@ import csv
 
 from utils.config import Config
 from utils.generate import generate_initial_population
+from utils.converters import proportion_to_rgb
 from fitness import calculate_fitness
 
 from selection import select_methods
@@ -47,17 +48,39 @@ class GeneticAlgorithm:
                 mutation_seed = random.uniform(0, 1)
                 if mutation_seed <= Config.mutation['probability']:
                     individual = mutation_methods[Config.mutation['name']](individual)
+                    individual.fitness = calculate_fitness(individual.get_gens())
+                    individual.color = proportion_to_rgb(individual.get_gens())
             
             new_population = new_gen_selects[Config.implementation](population, children)
             population = new_population
 
+            min_fitness = population[0].fitness
+            max_fitness = population[0].fitness
+            avg_fitness = 0.0
+
+            indiv_proportions = {}
+
+            for indiv in population:
+                if indiv.color not in indiv_proportions:
+                    indiv_proportions[indiv.color] = 0
+                indiv_proportions[indiv.color] += 1 / Config.max_population_size
+                if indiv.fitness < min_fitness:
+                    min_fitness = indiv.fitness
+                if indiv.fitness > max_fitness:
+                    max_fitness = indiv.fitness
+                avg_fitness += indiv.fitness
+            
+            avg_fitness /= Config.max_population_size
+            diversity = shannon_diversity(indiv_proportions)
+
             generations_data.append({
                 'generation': generation,
-                'min_fitness': calculate_fitness(min(population, key=lambda chromosome: calculate_fitness(chromosome.get_gens())).get_gens()),
-                'avg_fitness': 0,
-                'max_fitness': calculate_fitness(max(population, key=lambda chromosome: calculate_fitness(chromosome.get_gens())).get_gens()),
-                'diversity': 0
-                })
+                'min_fitness': min_fitness,
+                'avg_fitness': avg_fitness,
+                'max_fitness': max_fitness,
+                # 'max_fitness': calculate_fitness(max(population, key=lambda chromosome: calculate_fitness(chromosome.get_gens())).get_gens()),
+                'diversity': diversity
+            })
             generation += 1
         
         with open(os.path.join(directory, filename), 'w', encoding='UTF-8', newline='') as file:
@@ -68,6 +91,12 @@ class GeneticAlgorithm:
         
         # TODO: Finish execution on acceptable solution or by structure (same values over multiple generations)
         return max(population, key=lambda chromosome: calculate_fitness(chromosome.get_gens()))
+
+def shannon_diversity(indiv_proportions):
+    diversity = 0
+    for indiv in indiv_proportions:
+        diversity -= indiv_proportions[indiv] * log(indiv_proportions[indiv])
+    return diversity
 
 def create_output_file():
     argc = len(sys.argv)
