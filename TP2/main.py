@@ -20,23 +20,24 @@ def diversity(population):
 # max_generations = Config.break_condition[0]['qty']
 # generic_algorithm = GeneticAlgorithm(Config.max_population_size, Config.select_amount_per_generation, max_generations, Config.mutation['probability'])
 genetic_algorithm = GeneticAlgorithm()
-best_chromosome = genetic_algorithm.run()
+for i in np.arange(Config.runs):
+    best_chromosome = genetic_algorithm.run(i)
 
-# Initialize the RGB values for the new color
-new_red = 0
-new_green = 0
-new_blue = 0
-# Loop through each color in the palette and calculate its contribution to the new color
-for i in range(Config.get_palette_color_amount()):
-    new_red += best_chromosome.get_gens()[i] * Config.palette[i][0]
-    new_green += best_chromosome.get_gens()[i] * Config.palette[i][1]
-    new_blue += best_chromosome.get_gens()[i] * Config.palette[i][2]
+    # Initialize the RGB values for the new color
+    new_red = 0
+    new_green = 0
+    new_blue = 0
+    # Loop through each color in the palette and calculate its contribution to the new color
+    for i in range(Config.get_palette_color_amount()):
+        new_red += best_chromosome.get_gens()[i] * Config.palette[i][0]
+        new_green += best_chromosome.get_gens()[i] * Config.palette[i][1]
+        new_blue += best_chromosome.get_gens()[i] * Config.palette[i][2]
 
-# Truncate the RGB values and create a tuple of the new RGB values
-new_color = [int(new_red), int(new_green), int(new_blue)]
+    # Truncate the RGB values and create a tuple of the new RGB values
+    new_color = [int(new_red), int(new_green), int(new_blue)]
 
-print('Best chromosome: {}'.format(best_chromosome))
-print('New color: {}'.format(new_color))
+    print('Best chromosome: {}'.format(best_chromosome))
+    print('New color: {}'.format(new_color))
 
 
 # Ejemplo de uso

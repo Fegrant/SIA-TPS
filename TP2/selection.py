@@ -22,9 +22,9 @@ def select_roulette(population, num_selected):
     cumulative_probabilities = np.cumsum(probabilities)
     selected_indices = []
     for i in range (num_selected):
-        point = random.uniform(0, 1)
+        point = np.random.uniform(0, 1)
         index = np.searchsorted(cumulative_probabilities, point)
-        selected_indices.append(index)
+        selected_indices.append(index)       
     return [population[i] for i in selected_indices]
 
 def select_universal(population, num_selected):

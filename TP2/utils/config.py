@@ -11,6 +11,7 @@ class Config:
     cross_over = None
     mutation = None
     implementation = None
+    runs = None
     
     @staticmethod
     def load_from_json(json_file):
@@ -26,6 +27,7 @@ class Config:
         Config.cross_over = data['cross_over']
         Config.mutation = data['mutation']
         Config.implementation = data['implementation']
+        Config.runs = data['runs']
     
     @staticmethod
     def get_palette_color_amount():

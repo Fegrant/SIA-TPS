@@ -1,10 +1,11 @@
 {
-    "palette": [[180, 180, 180], [255, 0, 0], [155, 155, 0]],
-    "color_objective": [200, 200, 200],
-    "selections": {"parents": {"name": "roulette", "amount": 250}, "new_gen": {"name": "elite", "amount": 250}},
+    "palette": [[200, 200, 200], [25, 100, 233], [155, 155, 0], [45, 90, 150], [200, 45, 200]],
+    "color_objective": [225, 23, 232],
+    "selections": {"parents": {"name": "elite", "amount": 250}, "new_gen": {"name": "roulette", "amount": 250}},
     "max_population_size": 500,
-    "max_generations": 100,
+    "max_generations": 200,
     "cross_over": {"name": "one_point", "probability": 0.95},
-    "mutation": {"name": "one_gene" , "probability": 0.05},
-    "implementation": "use_all"
+    "mutation": {"name": "one_gene" , "probability": 0.25},
+    "implementation": "use_all",
+    "runs": 10
 }
