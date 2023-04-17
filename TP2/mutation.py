@@ -33,10 +33,10 @@ def gene_mutation(individual: Chromosome):
 
 
 def limited_multiple_gene_mutation(individual: Chromosome):
-    mutate_amount = Config.mutation["limited"]["amount"]
+    mutate_amount = 2
     if random.uniform(0, 1) <= mutation_probability:
         gens_pos = random.sample(range(palette_color_amount), k=mutate_amount)
-        for pos in range(gens_pos):
+        for pos in gens_pos:
             individual.gens[pos] = random.uniform(0, 1)
         # Must recalculate fitness and color on mutation
         individual.fitness = calculate_fitness(individual.gens)
