@@ -94,16 +94,13 @@ class GeneticAlgorithm:
         file_path = os.path.join(directory, filename)
         write_headers = False
 
-        if not os.path.exists(file_path):
-            write_headers = True
-
         file_option = 'a'
         if run_number == 0:
             file_option = 'w'
 
         with open(file_path, file_option, encoding='UTF-8', newline='') as file:
             csvwriter = csv.writer(file)
-            if write_headers:
+            if file_option == 'w':
                 csvwriter.writerow(['run', 'generation', 'min_fitness', 'avg_fitness', 'max_fitness', 'diversity'])
             for gen_data in generations_data:
                 csvwriter.writerow([run_number] + list(gen_data.values()))

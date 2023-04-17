@@ -33,8 +33,8 @@ def crossover_one_point(parent1: Chromosome, parent2: Chromosome):
     return child1, child2
 
 def crossover_uniform(parent1: Chromosome, parent2: Chromosome):
-    child1 = Chromosome(copy.deepcopy(parent1.get_gens))
-    child2 = Chromosome(copy.deepcopy(parent2.get_gens))
+    child1 = Chromosome(copy.deepcopy(parent1.get_gens()))
+    child2 = Chromosome(copy.deepcopy(parent2.get_gens()))
     # child1 = Chromosome([0 for _ in range(1, palette_color_amount)])
     # child2 = Chromosome([0 for _ in range(1, palette_color_amount)])
 

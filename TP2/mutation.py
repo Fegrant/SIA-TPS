@@ -45,5 +45,5 @@ def uniform_multiple_gene_mutation(individual: Chromosome):
 
 def complete_mutation(individual: Chromosome):
     if random.uniform(0, 1) <= mutation_probability:
-        individual.set_gens(random.uniform(0, 1) for _ in range(palette_color_amount))
+        individual.set_gens([random.uniform(0, 1) for _ in range(palette_color_amount)])
     return individual

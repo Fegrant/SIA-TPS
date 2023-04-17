@@ -33,15 +33,16 @@ def select_universal(population, num_selected):
     probabilities = [fitness / fitness_sum for fitness in fitness_scores]
     cumulative_probabilities = np.cumsum(probabilities)
     selected_indices = []
-    for i in range(num_selected - 1):
+    for i in range(num_selected):
         start_point = np.random.uniform(0, 1)
-        point = start_point + i / num_selected
+        point = (start_point + i) / num_selected
         index = np.searchsorted(cumulative_probabilities, point)
         selected_indices.append(index)
-    return [population[i-1] for i in selected_indices]
+    return [population[i] for i in selected_indices]
 
 # TODO: tournament_size = M, la cantidad de individuos a elegir de los N disponibles en la poblacion. La pregunta es, que valor tiene M?
-def select_deterministic_tournament(population, num_selected, tournament_size):
+def select_deterministic_tournament(population, num_selected):
+    tournament_size = 30
     selected_indices = []
     while len(selected_indices) < num_selected:
         tournament_indices = np.random.choice(len(population), tournament_size, replace=False)
