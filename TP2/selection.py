@@ -12,11 +12,11 @@ select_methods = {
 }
 
 def select_elite(population, num_selected):
-    sorted_population = sorted(population, key=lambda x: calculate_fitness(x.get_gens()), reverse=True)
+    sorted_population = sorted(population, key=lambda x: x.fitness, reverse=True)
     return sorted_population[:num_selected]
 
 def select_roulette(population, num_selected):
-    fitness_scores = [calculate_fitness(chromosome.get_gens()) for chromosome in population]
+    fitness_scores = [chromosome.fitness for chromosome in population]
     fitness_sum = sum(fitness_scores)
     probabilities = [fitness / fitness_sum for fitness in fitness_scores]
     cumulative_probabilities = np.cumsum(probabilities)
@@ -28,7 +28,7 @@ def select_roulette(population, num_selected):
     return [population[i] for i in selected_indices]
 
 def select_universal(population, num_selected):
-    fitness_scores = [calculate_fitness(chromosome.get_gens()) for chromosome in population]
+    fitness_scores = [chromosome.fitness for chromosome in population]
     fitness_sum = sum(fitness_scores)
     probabilities = [fitness / fitness_sum for fitness in fitness_scores]
     cumulative_probabilities = np.cumsum(probabilities)
@@ -42,20 +42,36 @@ def select_universal(population, num_selected):
 
 # TODO: tournament_size = M, la cantidad de individuos a elegir de los N disponibles en la poblacion. La pregunta es, que valor tiene M?
 def select_deterministic_tournament(population, num_selected):
-    tournament_size = 500
+    tournament_size = 50
     selected = []
+    pop_len = len(population)
 
     i = 0
     while i < num_selected:
-        tournament_indices = np.random.randint(0, Config.max_population_size, tournament_size)
+        #threshold = np.random.uniform(0, 1)
+        #r = np.random.uniform(0, 1)
+
+        tournament_indices = np.random.randint(0, pop_len, tournament_size)
+
+        #max_fitness_idx = tournament_indices[0]
+        #min_fitness_idx = tournament_indices[1]
+
+        #if population[max_fitness_idx].fitness < population[min_fitness_idx].fitness:
+            #max_fitness_idx = tournament_indices[1]
+            #min_fitness_idx = tournament_indices[0]
+        
+        #if r < threshold:
+            #selected.append(population[max_fitness_idx])
+        #else:
+            #selected.append(population[min_fitness_idx])
 
         max_fitness_idx = tournament_indices[0]
         max_fitness = population[max_fitness_idx].fitness
-        
+
         for j in tournament_indices:
-            if population[j].fitness > max_fitness:
-                max_fitness = population[j].fitness
-                max_fitness_idx = j
+           if population[j].fitness > max_fitness:
+               max_fitness = population[j].fitness
+               max_fitness_idx = j
         
         selected.append(population[j])
         i += 1
