@@ -17,48 +17,51 @@ def fitness_vs_mutation_probability():
         
 
 def probability(plot_name):
+    # Create empty lists to store data for all probabilities
+    crossover_probabilities = []
+    min_fitnesses = []
+    avg_fitnesses = []
+    max_fitnesses = []
+    sem_min_fitnesses = []
+    sem_avg_fitnesses = []
+    sem_max_fitnesses = []
+
     for i in range(0, 11):
-        j = i/10
+        crossover_probability = i/10
+        crossover_probabilities.append(crossover_probability)
         if i == 0:
-            j = i
+            crossover_probability = i
         if i == 10:
-            j = 1
-        filename = '{}{}.csv'.format(plot_name, j)
+            crossover_probability = 1
+        filename = '{}{}.csv'.format(plot_name, crossover_probability)
         df = pd.read_csv(filename)
 
-        # Add a column to identify the last generation for each run
-        df["last_generation"] = df.groupby("run")["generation"].transform("max")
-
-        # Group by "last_generation" column and calculate the mean and standard deviation of the fitness values
-        grouped = df.groupby("last_generation").agg({"min_fitness": "mean", "avg_fitness": "mean", "max_fitness": "mean"})
-
-        # Calculate the standard error of the mean for each fitness value
-        grouped["sem_min_fitness"] = df.groupby("last_generation")["min_fitness"].sem()
-        grouped["sem_avg_fitness"] = df.groupby("last_generation")["avg_fitness"].sem()
-        grouped["sem_max_fitness"] = df.groupby("last_generation")["max_fitness"].sem()
-
-        # Reset the index of the resulting DataFrame
-        grouped = grouped.reset_index()
-
-        plt.errorbar(grouped["last_generation"], grouped["min_fitness"], yerr=grouped["sem_min_fitness"], label="Minimum Fitness")
-        plt.errorbar(grouped["last_generation"], grouped["avg_fitness"], yerr=grouped["sem_avg_fitness"], label="Average Fitness")
-        plt.errorbar(grouped["last_generation"], grouped["max_fitness"], yerr=grouped["sem_max_fitness"], label="Maximum Fitness")
-
-        plt.legend()
-        if plot_name == '../results/crosses/uniform-':
-            plt.xlabel("Crossover Probability")
-            plt.title("Fitness vs. Crossover")
-        else:
-            plt.xlabel("Mutation Probability")
-            plt.title("Fitness vs. Mutation")
+        # Create a new dataframe selecting the run and his last generation
+        grouped = df.groupby('run').last()
         
+        # Get the min max and average fitness for all run and last generation and its standard error
+        min_fitnesses.append(grouped["min_fitness"].mean())
+        avg_fitnesses.append(grouped["avg_fitness"].mean())
+        max_fitnesses.append(grouped["max_fitness"].mean())
+        sem_min_fitnesses.append(grouped["min_fitness"].sem())
+        sem_avg_fitnesses.append(grouped["avg_fitness"].sem())
+        sem_max_fitnesses.append(grouped["max_fitness"].sem())
 
-        plt.ylabel("Fitness")
-        plt.show()
+    # Plot data for all probabilities
+    plt.errorbar(crossover_probabilities, min_fitnesses, yerr=sem_min_fitnesses, label="Minimum Fitness")
+    plt.errorbar(crossover_probabilities, avg_fitnesses, yerr=sem_avg_fitnesses, label="Average Fitness")
+    plt.errorbar(crossover_probabilities, max_fitnesses, yerr=sem_max_fitnesses, label="Maximum Fitness")
+
+    plt.legend()
+    if plot_name == './results/crosses/uniform-':
+        plt.xlabel("Crossover Probability")
+        plt.title("Fitness vs. Crossover Probability")
+    else:
+        plt.xlabel("Mutation Probability")
+        plt.title("Fitness vs. Mutation Probability")
+        
+    plt.ylabel("Fitness")
+    plt.show()
 
 if __name__ == '__main__':
-    fitness_vs_mutation_probability()
-
-
-
-
+    probability('./results/mutations/complete-')
