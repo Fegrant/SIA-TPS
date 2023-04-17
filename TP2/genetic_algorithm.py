@@ -102,10 +102,10 @@ class GeneticAlgorithm:
             csvwriter = csv.writer(file)
             if file_option == 'w':
                 csvwriter.writerow(['run', 'generation', 'min_fitness', 'avg_fitness', 'max_fitness', 'diversity'])
-            for gen_data in generations_data:
-                csvwriter.writerow([run_number] + list(gen_data.values()))
+            csvwriter.writerow([run_number] + list(generations_data[-1].values()))
+            # for gen_data in generations_data:
+            #     csvwriter.writerow([run_number] + list(gen_data.values()))
         
-        # TODO: Finish execution on acceptable solution or by structure (same values over multiple generations)
         return max(population, key=lambda chromosome: calculate_fitness(chromosome.get_gens()))
 
 
