@@ -47,7 +47,7 @@ def complete_mutation(individual: Chromosome):
     if random.uniform(0, 1) <= mutation_probability:
         max_val = 1
         for i in np.arange(Config.get_palette_color_amount()):
-            if i == Config.get_palette_color_amount - 1:
+            if i == Config.get_palette_color_amount() - 1:
                 individual.gens[i] = max_val
                 break
             individual.gens[i] = random.uniform(0, max_val)
