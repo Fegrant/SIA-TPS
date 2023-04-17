@@ -59,18 +59,18 @@ Los archivos de salida son estadísticas en formato ```.csv```, que se encuentra
 Estas corresponden con los archivos de salida de los siguientes comandos:
 
 ```bash
-python main.py
-python main.py i
-python main.py c
-python main.py m
-python main.py s
+1. python main.py
+2. python main.py i
+3. python main.py c
+4. python main.py m
+5. python main.py s
 ```
-```csv
-results/other.csv
-resultus/implementations/use_all.csv
-results/crosses/one_point-0.5.csv
-results/mutations/one_gene-0.5.csv
-results/selections/elite-50_roulette-50.csv
+```bash
+1. results/other.csv
+2. resultus/implementations/use_all.csv
+3. results/crosses/one_point-0.5.csv
+4. results/mutations/one_gene-0.5.csv
+5. results/selections/elite-50_roulette-50.csv
 ```
 
 Estas estadísticas pueden ser luego visualizadas corriendo el script __graphs.py__, que genera gráficos sobre
@@ -78,4 +78,3 @@ Estas estadísticas pueden ser luego visualizadas corriendo el script __graphs.p
 - use_all vs new_over_actual
 - deterministico vs probabilistico
 - variacion en la cantidad de hijos
-- variacion en la cantidad de poblacion
