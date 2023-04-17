@@ -180,7 +180,7 @@ def create_output_file():
             directory += '/implementations'
             if not os.path.exists(directory):
                 os.makedirs(directory)
-            filename = '{}.csv'.format(Config.implementation)
+            filename = '{}_{}.csv'.format(Config.implementation, Config.selections['new_gen']['amount'])
         case 'c':
             directory += '/crosses'
             if not os.path.exists(directory):

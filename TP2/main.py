@@ -4,7 +4,7 @@ from fitness import calculate_fitness
 from selection import select_elite, select_roulette
 from utils.generate import generate_initial_population
 from cross import crossover_one_point
-from genetic_algorithm import GeneticAlgorithm
+from genetic_algorithm import GeneticAlgorithm, color_similarity
 from utils.config import Config
 
 Config.load_from_json('config.json')
@@ -36,5 +36,6 @@ for i in np.arange(Config.runs):
     # Truncate the RGB values and create a tuple of the new RGB values
     new_color = [int(new_red), int(new_green), int(new_blue)]
 
-    print('Best chromosome: {}'.format(best_chromosome))
-    print('New color: {}'.format(new_color))
+    print('Palette proportions: {}'.format(['{}%'.format(round(gene * 100, 3)) for gene in best_chromosome.gens]))
+    print('Color similarity: {}%'.format(round(color_similarity(new_color, Config.color_objective) * 100, 3)))
+    # print('New color: {}'.format(new_color))

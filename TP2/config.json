@@ -1,11 +1,11 @@
 {
     "palette": [[200, 200, 200], [25, 100, 233], [155, 155, 0], [45, 90, 150], [200, 45, 200]],
     "color_objective": [225, 23, 232],
-    "selections": {"parents": {"name": "deterministic_tournament", "amount": 2500}, "new_gen": {"name": "deterministic_tournament", "amount": 2500}},
+    "selections": {"parents": {"name": "universal", "amount": 4500}, "new_gen": {"name": "universal", "amount": 4500}},
     "max_population_size": 5000,
     "max_generations": 500,
     "cross_over": {"name": "uniform", "probability": 0.9},
-    "mutation": {"name": "one_gene" , "probability": 0},
-    "implementation": "use_all",
+    "mutation": {"name": "one_gene" , "probability": 0.5},
+    "implementation": "new_over_actual",
     "runs": 10
 }
