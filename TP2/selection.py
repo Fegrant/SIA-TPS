@@ -1,8 +1,4 @@
 import numpy as np
-import random
-
-from fitness import calculate_fitness
-from utils.config import Config
 
 select_methods = {
     "elite": (lambda population, num_selected: select_elite(population, num_selected)),
@@ -42,29 +38,14 @@ def select_universal(population, num_selected):
 
 # TODO: tournament_size = M, la cantidad de individuos a elegir de los N disponibles en la poblacion. La pregunta es, que valor tiene M?
 def select_deterministic_tournament(population, num_selected):
-    tournament_size = 50
+    tournament_size = 25
     selected = []
     pop_len = len(population)
 
     i = 0
     while i < num_selected:
-        #threshold = np.random.uniform(0, 1)
-        #r = np.random.uniform(0, 1)
-
         tournament_indices = np.random.randint(0, pop_len, tournament_size)
-
-        #max_fitness_idx = tournament_indices[0]
-        #min_fitness_idx = tournament_indices[1]
-
-        #if population[max_fitness_idx].fitness < population[min_fitness_idx].fitness:
-            #max_fitness_idx = tournament_indices[1]
-            #min_fitness_idx = tournament_indices[0]
         
-        #if r < threshold:
-            #selected.append(population[max_fitness_idx])
-        #else:
-            #selected.append(population[min_fitness_idx])
-
         max_fitness_idx = tournament_indices[0]
         max_fitness = population[max_fitness_idx].fitness
 

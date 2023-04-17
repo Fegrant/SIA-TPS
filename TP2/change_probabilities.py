@@ -10,9 +10,11 @@ mutation_file_names = ['complete', 'limited', 'one_gene', 'uniform']
 
 for mutation in mutation_file_names:
     config["mutation"]["name"] = mutation
+
+    pretty_data = json.dumps(config, indent=4)
     # Save the updated config to a new file
     with open('config.json', 'w') as f:
-        json.dump(config, f)
+        f.write(pretty_data)
 
     # Change the mutation probability from 0 to 1 in increments of 0.1
     for p in range(0, 11):
@@ -26,10 +28,11 @@ for mutation in mutation_file_names:
 
         # Update the mutation probability in the config
         config["mutation"]["probability"] = mutation_probability
+        pretty_data = json.dumps(config, indent=4)
 
         # Save the updated config to a new file
         with open('config.json', 'w') as f:
-            json.dump(config, f)
+            f.write(pretty_data)
 
         # Run the main.py script with the updated config
         os.system('python main.py m') 
