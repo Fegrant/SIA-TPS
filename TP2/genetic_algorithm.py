@@ -29,6 +29,7 @@ class GeneticAlgorithm:
         (directory, filename) = create_output_file()
         generations_data = []
         generation = 0
+        converged_gens = 0
         population = generate_initial_population(Config.max_population_size)
 
         while Config.max_generations is not None and generation < Config.max_generations:
@@ -48,8 +49,6 @@ class GeneticAlgorithm:
                 mutation_seed = random.uniform(0, 1)
                 if mutation_seed <= Config.mutation['probability']:
                     individual = mutation_methods[Config.mutation['name']](individual)
-                    individual.fitness = calculate_fitness(individual.get_gens())
-                    individual.color = proportion_to_rgb(individual.get_gens())
             
             new_population = new_gen_selects[Config.implementation](population, children)
             population = new_population
@@ -83,8 +82,12 @@ class GeneticAlgorithm:
                 'diversity': diversity
             })
 
-            if generation > 1 and has_converged([generations_data[generation]['max_fitness'], generations_data[generation-1]['max_fitness']]) and has_converged([generations_data[generation]['avg_fitness'], generations_data[generation-1]['avg_fitness']], 1e-2):
-                break
+            if generation > 1 and has_converged([generations_data[generation]['max_fitness'], generations_data[generation-1]['max_fitness']]) and has_converged([generations_data[generation]['avg_fitness'], generations_data[generation-1]['avg_fitness']], 1e-1):
+                converged_gens += 1
+                if converged_gens == 5:
+                    break
+            else:
+                converged_gens = 0
             
             if is_acceptable_solution(max_fitness_individual):
                 break
@@ -102,11 +105,11 @@ class GeneticAlgorithm:
             csvwriter = csv.writer(file)
             if file_option == 'w':
                 csvwriter.writerow(['run', 'generation', 'min_fitness', 'avg_fitness', 'max_fitness', 'diversity'])
-            for gen_data in generations_data:
-                csvwriter.writerow([run_number] + list(gen_data.values()))
+            csvwriter.writerow([run_number] + list(generations_data[-1].values()))
+            # for gen_data in generations_data:
+            #     csvwriter.writerow([run_number] + list(gen_data.values()))
         
-        # TODO: Finish execution on acceptable solution or by structure (same values over multiple generations)
-        return max(population, key=lambda chromosome: calculate_fitness(chromosome.get_gens()))
+        return max(population, key=lambda chromosome: chromosome.fitness)
 
 
 def has_converged(numbers, tolerance=1e-3):
@@ -180,7 +183,7 @@ def create_output_file():
             directory += '/implementations'
             if not os.path.exists(directory):
                 os.makedirs(directory)
-            filename = '{}.csv'.format(Config.implementation)
+            filename = '{}_{}.csv'.format(Config.implementation, Config.selections['new_gen']['amount'])
         case 'c':
             directory += '/crosses'
             if not os.path.exists(directory):
