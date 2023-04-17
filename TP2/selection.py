@@ -42,16 +42,16 @@ def select_universal(population, num_selected):
 
 # TODO: tournament_size = M, la cantidad de individuos a elegir de los N disponibles en la poblacion. La pregunta es, que valor tiene M?
 def select_deterministic_tournament(population, num_selected):
-    tournament_size = 500
+    tournament_size = 1000
     selected = []
 
     i = 0
     while i < num_selected:
-        tournament_indices = np.random.randint(0, Config.max_population_size, tournament_size)
-
+        tournament_indices = np.random.randint(0, len(population), tournament_size)
+        
         max_fitness_idx = tournament_indices[0]
         max_fitness = population[max_fitness_idx].fitness
-        
+
         for j in tournament_indices:
             if population[j].fitness > max_fitness:
                 max_fitness = population[j].fitness
