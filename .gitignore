@@ -134,3 +134,4 @@ dmypy.json
 
 # txt outputs
 *.txt
+*.csv
