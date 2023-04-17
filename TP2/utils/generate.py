@@ -19,11 +19,6 @@ def generate_initial_population(population_size: int):
                 gene_value = max_val
             genes.append(gene_value)
         population.append(Chromosome(genes))
-    
-    print(population[0].gens)
-    print(population[50])
-    print(population[100])
-
     return population
     
     # return [ Chromosome(np.random.rand(Config.get_palette_color_amount())) for _ in range(population_size) ]
