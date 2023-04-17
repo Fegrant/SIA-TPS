@@ -6,7 +6,7 @@ with open('config.json', 'r') as f:
     config = json.load(f)
 
 # Change the mutation name
-mutation_file_names = ['complete', 'limited', 'one_gene', 'uniform']
+mutation_file_names = ['complete', 'limited']
 
 for mutation in mutation_file_names:
     config["mutation"]["name"] = mutation
