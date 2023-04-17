@@ -29,13 +29,13 @@ for i in np.arange(Config.runs):
     new_blue = 0
     # Loop through each color in the palette and calculate its contribution to the new color
     for i in range(Config.get_palette_color_amount()):
-        new_red += best_chromosome.get_gens()[i] * Config.palette[i][0]
-        new_green += best_chromosome.get_gens()[i] * Config.palette[i][1]
-        new_blue += best_chromosome.get_gens()[i] * Config.palette[i][2]
+        new_red += best_chromosome.gens[i] * Config.palette[i][0]
+        new_green += best_chromosome.gens[i] * Config.palette[i][1]
+        new_blue += best_chromosome.gens[i] * Config.palette[i][2]
 
     # Truncate the RGB values and create a tuple of the new RGB values
     new_color = [int(new_red), int(new_green), int(new_blue)]
 
     print('Palette proportions: {}'.format(['{}%'.format(round(gene * 100, 3)) for gene in best_chromosome.gens]))
     print('Color similarity: {}%'.format(round(color_similarity(new_color, Config.color_objective) * 100, 3)))
-    # print('New color: {}'.format(new_color))
+    print('New color: {}'.format(new_color))

@@ -9,7 +9,7 @@ select_methods = {
 
 def select_elite(population, num_selected):
     sorted_population = sorted(population, key=lambda x: x.fitness, reverse=True)
-    return sorted_population[:num_selected]
+    return sorted_population[0:num_selected]
 
 def select_roulette(population, num_selected):
     fitness_scores = [chromosome.fitness for chromosome in population]
@@ -38,7 +38,7 @@ def select_universal(population, num_selected):
 
 # TODO: tournament_size = M, la cantidad de individuos a elegir de los N disponibles en la poblacion. La pregunta es, que valor tiene M?
 def select_deterministic_tournament(population, num_selected):
-    tournament_size = 25
+    tournament_size = 100
     selected = []
     pop_len = len(population)
 

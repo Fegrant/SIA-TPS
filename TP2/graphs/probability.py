@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
+crosses_file_format = './results/crosses/{M}-{P}.csv'
+
 
 # fitness vs crossover probability
 def fitness_vs_probability():
@@ -13,6 +15,7 @@ def fitness_vs_probability():
 # fitness vs mutation probability
 def fitness_vs_mutation_probability():
     probability('./results/mutations/complete-')
+
 
 def probabilities_of_different_mutations():
     # mutation file names
@@ -95,16 +98,16 @@ def probability(plot_name):
         grouped = df.groupby('run').last()
         
         # Get the min max and average fitness for all run and last generation and its standard error
-        min_fitnesses.append(grouped["min_fitness"].mean())
-        avg_fitnesses.append(grouped["avg_fitness"].mean())
+        # min_fitnesses.append(grouped["min_fitness"].mean())
+        # avg_fitnesses.append(grouped["avg_fitness"].mean())
         max_fitnesses.append(grouped["max_fitness"].mean())
-        sem_min_fitnesses.append(grouped["min_fitness"].sem())
-        sem_avg_fitnesses.append(grouped["avg_fitness"].sem())
+        # sem_min_fitnesses.append(grouped["min_fitness"].sem())
+        # sem_avg_fitnesses.append(grouped["avg_fitness"].sem())
         sem_max_fitnesses.append(grouped["max_fitness"].sem())
 
     # Plot data for all probabilities
-    plt.errorbar(probabilities, min_fitnesses, yerr=sem_min_fitnesses, label="Minimum Fitness")
-    plt.errorbar(probabilities, avg_fitnesses, yerr=sem_avg_fitnesses, label="Average Fitness")
+    # plt.errorbar(probabilities, min_fitnesses, yerr=sem_min_fitnesses, label="Minimum Fitness")
+    # plt.errorbar(probabilities, avg_fitnesses, yerr=sem_avg_fitnesses, label="Average Fitness")
     plt.errorbar(probabilities, max_fitnesses, yerr=sem_max_fitnesses, label="Maximum Fitness")
 
     plt.legend()
@@ -118,5 +121,60 @@ def probability(plot_name):
     plt.ylabel("Fitness")
     plt.show()
 
+
+def crosses_probabilities():
+    crosses = ['one_point', 'uniform']
+    colors = ['tab:red', 'tab:blue']
+    j = 0
+
+    for cross in crosses:
+        # Create empty lists to store data for all probabilities
+        probabilities = []
+
+        max_fitnesses = []
+        sem_max_fitnesses = []
+        for i in range(0, 11):
+            probability = i/10
+            probabilities.append(probability)
+            if i == 0:
+                probability = i
+            if i == 10:
+                probability = 1
+
+            filename = crosses_file_format.replace('{M}', cross).replace('{P}', str(probability))
+
+            # filename = '{}{}.csv'.format(plot_name, probability)
+            df = pd.read_csv(filename)
+
+            # Create a new dataframe selecting the run and his last generation
+            grouped = df.groupby('run').last()
+            
+            # Get the min max and average fitness for all run and last generation and its standard error
+            # min_fitnesses.append(grouped["min_fitness"].mean())
+            # avg_fitnesses.append(grouped["avg_fitness"].mean())
+            max_fitnesses.append(grouped["max_fitness"].mean())
+            # sem_min_fitnesses.append(grouped["min_fitness"].sem())
+            # sem_avg_fitnesses.append(grouped["avg_fitness"].sem())
+            sem_max_fitnesses.append(grouped["max_fitness"].sem())
+        plt.errorbar(probabilities, max_fitnesses, yerr=sem_max_fitnesses, marker='o', linestyle='dotted', capsize=4, label=cross, color=colors[j])
+        plt.legend()
+        j += 1
+
+    # Plot data for all probabilities
+    # plt.errorbar(probabilities, min_fitnesses, yerr=sem_min_fitnesses, label="Minimum Fitness")
+    # plt.errorbar(probabilities, avg_fitnesses, yerr=sem_avg_fitnesses, label="Average Fitness")
+    # plt.errorbar(probabilities, max_fitnesses, yerr=sem_max_fitnesses, label="Maximum Fitness")
+
+    # plt.legend()
+    # if plot_name == './results/crosses/uniform-':
+    #     plt.xlabel("Crossover Probability")
+    #     plt.title("Fitness vs. Crossover Probability")
+    # else:
+
+    plt.xlabel("Probabilidad de cruza")     
+    plt.ylabel("Fitness máximo")
+    plt.show()
+
 if __name__ == '__main__':
-    probability('./results/mutations/complete-')
+    crosses_probabilities()
+    # probability('./results/mutations/complete-')

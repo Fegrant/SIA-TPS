@@ -82,9 +82,9 @@ class GeneticAlgorithm:
                 'diversity': diversity
             })
 
-            if generation > 1 and has_converged([generations_data[generation]['max_fitness'], generations_data[generation-1]['max_fitness']]) and has_converged([generations_data[generation]['avg_fitness'], generations_data[generation-1]['avg_fitness']], 1e-1):
+            if generation > 0 and has_converged([generations_data[generation]['max_fitness'], generations_data[generation-1]['max_fitness']], 1e-2) and has_converged([generations_data[generation]['avg_fitness'], generations_data[generation-1]['avg_fitness']], 1e-1):
                 converged_gens += 1
-                if converged_gens == 5:
+                if converged_gens == 2:
                     break
             else:
                 converged_gens = 0

@@ -18,7 +18,7 @@ def fitness_by_selection_method():
 
     methods = ['elite', 'roulette', 'universal', 'deterministic_tournament']
     bars_colors = ['tab:red', 'tab:blue', 'tab:red', 'tab:orange']
-    K = '2500'
+    K = '500'
 
     fitnesses = []
     err_fitnesses = []
@@ -79,7 +79,7 @@ def fitness_by_implementation_method():
     plt.show()
 
 fitness_by_selection_method()
-fitness_by_implementation_method()
+# fitness_by_implementation_method()
 
 #df1 = pd.read_csv('./results/selections/use_all.csv')
 #df1 = pd.read_csv('./results/selections/use_all.csv')

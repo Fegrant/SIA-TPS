@@ -16,41 +16,27 @@ mutation_probability = Config.mutation["probability"]
 palette_color_amount = Config.get_palette_color_amount()
 
 mutation_methods = {
-    "one_gene": (lambda individual: gene_mutation(individual)),
     "limited": (lambda individual: limited_multiple_gene_mutation(individual)),
-    "uniform": (lambda individual: uniform_multiple_gene_mutation(individual)),
     "complete": (lambda individual: complete_mutation(individual))
 }
 
-def gene_mutation(individual: Chromosome):
-    if random.uniform(0, 1) <= mutation_probability:
-        gene_index = random.sample(range(palette_color_amount), k=1)
-        individual.gens[gene_index] = random.uniform(0, 1)
-        # Must recalculate fitness and color on mutation
-        individual.fitness = calculate_fitness(individual.gens)
-        individual.color = proportion_to_rgb(individual.gens)
-    return individual
-
 
 def limited_multiple_gene_mutation(individual: Chromosome):
-    mutate_amount = Config.mutation["limited"]["amount"]
+    mutate_amount = Config.mutation['amount']
     if random.uniform(0, 1) <= mutation_probability:
         gens_pos = random.sample(range(palette_color_amount), k=mutate_amount)
-        for pos in range(gens_pos):
-            individual.gens[pos] = random.uniform(0, 1)
-        # Must recalculate fitness and color on mutation
-        individual.fitness = calculate_fitness(individual.gens)
-        individual.color = proportion_to_rgb(individual.gens)
-    return individual
+        max_val = 0
 
+        for i in gens_pos:
+            max_val += individual.gens[i]
+        
+        for j in gens_pos:
+            if j == gens_pos[mutate_amount - 1]:
+                individual.gens[j] = max_val
+                break
+            individual.gens[j] = np.random.uniform(0, max_val)
+            max_val -= individual.gens[j]
 
-def uniform_multiple_gene_mutation(individual: Chromosome):
-    has_mutated = False
-    for pos in range(palette_color_amount):
-        if random.uniform(0, 1) <= mutation_probability:
-            individual.gens[pos] = random.uniform(0, 1)
-            has_mutated = True
-    if has_mutated:
         # Must recalculate fitness and color on mutation
         individual.fitness = calculate_fitness(individual.gens)
         individual.color = proportion_to_rgb(individual.gens)
@@ -59,7 +45,14 @@ def uniform_multiple_gene_mutation(individual: Chromosome):
 
 def complete_mutation(individual: Chromosome):
     if random.uniform(0, 1) <= mutation_probability:
-        individual.gens = [random.uniform(0, 1) for _ in range(palette_color_amount)]
+        max_val = 1
+        for i in np.arange(Config.get_palette_color_amount):
+            if i == Config.get_palette_color_amount - 1:
+                individual.gens[i] = max_val
+                break
+            individual.gens[i] = random.uniform(0, max_val)
+            max_val -= individual.gens[i]
+
         # Must recalculate fitness and color on mutation
         individual.fitness = calculate_fitness(individual.gens)
         individual.color = proportion_to_rgb(individual.gens)
