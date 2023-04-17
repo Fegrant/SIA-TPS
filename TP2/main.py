@@ -38,13 +38,3 @@ for i in np.arange(Config.runs):
 
     print('Best chromosome: {}'.format(best_chromosome))
     print('New color: {}'.format(new_color))
-
-
-# Ejemplo de uso
-# palette = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-# target_color = np.array([0.5, 0.5, 0])
-
-
-# mixed_color = np.dot(best_chromosome, palette)
-# print(f'Proporciones de la paleta a utilizar: {best_chromosome}')
-# print(f'Similitud con el color objetivo: {euclidean(target_color, mixed_color)}')
