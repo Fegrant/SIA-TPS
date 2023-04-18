@@ -39,12 +39,12 @@
     "max_population_size": 1000,
     "max_generations": 400,
     "cross_over": {
-        "name": "one_point",
-        "probability": 0.9
+        "name": "uniform",
+        "probability": 1
     },
     "mutation": {
         "name": "complete",
-        "probability": 0.1,
+        "probability": 0.5,
         "amount": 2
     },
     "implementation": "new_over_actual",

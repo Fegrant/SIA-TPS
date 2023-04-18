@@ -142,26 +142,12 @@ def crosses_probabilities():
             grouped = df.groupby('run').last()
             
             # Get the min max and average fitness for all run and last generation and its standard error
-            # min_fitnesses.append(grouped["min_fitness"].mean())
-            # avg_fitnesses.append(grouped["avg_fitness"].mean())
             max_fitnesses.append(grouped["max_fitness"].mean())
-            # sem_min_fitnesses.append(grouped["min_fitness"].sem())
-            # sem_avg_fitnesses.append(grouped["avg_fitness"].sem())
             sem_max_fitnesses.append(grouped["max_fitness"].sem())
+            
         plt.errorbar(probabilities, max_fitnesses, yerr=sem_max_fitnesses, marker='o', linestyle='dotted', capsize=4, label=cross, color=colors[j])
         plt.legend()
         j += 1
-
-    # Plot data for all probabilities
-    # plt.errorbar(probabilities, min_fitnesses, yerr=sem_min_fitnesses, label="Minimum Fitness")
-    # plt.errorbar(probabilities, avg_fitnesses, yerr=sem_avg_fitnesses, label="Average Fitness")
-    # plt.errorbar(probabilities, max_fitnesses, yerr=sem_max_fitnesses, label="Maximum Fitness")
-
-    # plt.legend()
-    # if plot_name == './results/crosses/uniform-':
-    #     plt.xlabel("Crossover Probability")
-    #     plt.title("Fitness vs. Crossover Probability")
-    # else:
 
     plt.xlabel("Probabilidad de cruza")     
     plt.ylabel("Fitness máximo")

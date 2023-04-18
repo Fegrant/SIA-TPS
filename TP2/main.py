@@ -38,4 +38,4 @@ for i in np.arange(Config.runs):
 
     print('Palette proportions: {}'.format(['{}%'.format(round(gene * 100, 3)) for gene in best_chromosome.gens]))
     print('Color similarity: {}%'.format(round(color_similarity(new_color, Config.color_objective) * 100, 3)))
-    print('New color: {}'.format(new_color))
+    print('Obtained color: {}'.format(new_color))
