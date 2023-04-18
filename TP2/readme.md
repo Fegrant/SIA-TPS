@@ -63,7 +63,7 @@ python main.py i|c|m|s
   max_population_size: 500,
   max_generations: 200,
   cross_over: { name: "one_point|uniform", probability: 0.95 },
-  mutation: { name: "one_gene|limited|uniform|complete", probability: 0.25 },
+  mutation: { name: "limited|complete", probability: 0.25 , "amount": 2},
   implementation: "use_all|new_over_actual",
   runs: 10,
 }
@@ -89,7 +89,7 @@ Estas corresponden con los archivos de salida de los siguientes comandos:
 1. results/other.csv
 2. resultus/implementations/use_all.csv
 3. results/crosses/one_point-0.5.csv
-4. results/mutations/one_gene-0.5.csv
+4. results/mutations/limited-0.5.csv
 5. results/selections/elite-50_roulette-50.csv
 ```
 

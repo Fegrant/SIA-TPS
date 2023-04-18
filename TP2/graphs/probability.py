@@ -19,7 +19,7 @@ def fitness_vs_mutation_probability():
 
 def probabilities_of_different_mutations():
     # mutation file names
-    mutation_file_names = ['complete', 'limited', 'one_gene', 'uniform']
+    mutation_file_names = ['complete', 'limited']
 
     # Create empty lists to store data for all probabilities
     probabilities = []
@@ -52,19 +52,11 @@ def probabilities_of_different_mutations():
             elif filename == './results/mutations/limited-{}.csv'.format(probability):
                 max_fitnesses_limited.append(df["max_fitness"].mean())
                 sem_max_fitnesses_limited.append(df["max_fitness"].sem())
-            elif filename == './results/mutations/one_gene-{}.csv'.format(probability):
-                max_fitnesses_one_gene.append(df["max_fitness"].mean())
-                sem_max_fitnesses_one_gene.append(df["max_fitness"].sem())
-            elif filename == './results/mutations/uniform-{}.csv'.format(probability):
-                max_fitnesses_uniform.append(df["max_fitness"].mean())
-                sem_max_fitnesses_uniform.append(df["max_fitness"].sem())
         
 
     # Plot data for all probabilities
     plt.errorbar(probabilities, max_fitnesses_complete, yerr=sem_max_fitnesses_complete, label="Maximum Fitness (Complete Mutation)")
     plt.errorbar(probabilities, max_fitnesses_limited, yerr=sem_max_fitnesses_limited, label="Maximum Fitness (Limited Mutation)")
-    plt.errorbar(probabilities, max_fitnesses_one_gene, yerr=sem_max_fitnesses_one_gene, label="Maximum Fitness (One Gene Mutation)")
-    plt.errorbar(probabilities, max_fitnesses_uniform, yerr=sem_max_fitnesses_uniform, label="Maximum Fitness (Uniform Mutation)")
 
     plt.legend()
     plt.xlabel("Mutation Probability")
