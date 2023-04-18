@@ -55,12 +55,12 @@ def probabilities_of_different_mutations():
         
 
     # Plot data for all probabilities
-    plt.errorbar(probabilities, max_fitnesses_complete, yerr=sem_max_fitnesses_complete, label="Maximum Fitness (Complete Mutation)")
-    plt.errorbar(probabilities, max_fitnesses_limited, yerr=sem_max_fitnesses_limited, label="Maximum Fitness (Limited Mutation)")
+    plt.errorbar(probabilities, max_fitnesses_complete, yerr=sem_max_fitnesses_complete, label="Maximo Fitness (Mutacion Completa)")
+    plt.errorbar(probabilities, max_fitnesses_limited, yerr=sem_max_fitnesses_limited, label="Maximo Fitness (Mutacion Limitada)")
 
     plt.legend()
-    plt.xlabel("Mutation Probability")
-    plt.title("Fitness vs. Mutation Probability")
+    plt.xlabel("Probabilidad de Mutacion")
+    plt.title("Fitness vs. Probabilidad de Mutacion")
         
     plt.ylabel("Fitness")
     plt.show()
@@ -154,5 +154,4 @@ def crosses_probabilities():
     plt.show()
 
 if __name__ == '__main__':
-    crosses_probabilities()
-    # probability('./results/mutations/complete-')
+    probabilities_of_different_mutations()
