@@ -3,7 +3,6 @@ import numpy as np
 # Définition de la fonction d'activation Escalon/Heaviside
 # english: Heaviside step function
 
-
 def heaviside(x):
     return np.where(x >= 0, 1, 0)
 
@@ -33,6 +32,8 @@ def perceptron_learning(X, y, learning_rate=0.1, max_epochs=100):
 
             # Calcul de l'erreur
             e = y[i] - y_pred
+
+            print(e)
 
             # Mise à jour des poids et du biais
             # english: Weights and bias update
