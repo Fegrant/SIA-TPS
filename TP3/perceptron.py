@@ -2,18 +2,20 @@ import numpy as np
 
 
 class Perceptron:
-    def __init__(self, num_inputs, learning_rate=0.01, max_epochs=1000):
-        self.weights = np.zeros(num_inputs + 1)     # Extra for w0
+    def __init__(self, num_inputs, learning_rate=0.1, max_epochs=100):
+        # Extra for w0 (umbral) initialized to 0 (higher the umbral more flexible the perceptron)
+        self.weights = np.zeros(num_inputs + 1)
         self.learning_rate = learning_rate
         self.max_epochs = max_epochs
 
     # input might be a vector or scalar
     def heaviside_predict(self, input):
         value = np.dot(input, self.weights[1:]) + self.weights[0]
-        return np.where(value >= 0, 1, 0)
+        return np.where(value >= 0, 1, -1)
 
     def train(self, X, y):
-        for _ in np.arange(self.max_epochs):
+        epochs = 0
+        while epochs < self.max_epochs:
             # zip(X, y) makes tuples of (input, solution) to iterate them
             for input, solution in zip(X, y):
                 prediction = self.heaviside_predict(input)
@@ -26,39 +28,17 @@ class Perceptron:
 
             prediction = self.heaviside_predict(X)
             if np.array_equal(y, prediction):
+                print("Convergence reached at epoch", epochs)
                 break               # Finish by convergence
 
             if self.perceptron_accuracy(X, y) == 100:
+                print("100% accuracy reached at epoch", epochs)
                 break               # Finish by 100% accuracy on predicts
+            epochs += 1
+        print("Epochs: ", epochs)
 
+    # Returns the accuracy of the perceptron on the given data. X and y must be the same length
     def perceptron_accuracy(self, X, y):
         prediction = self.heaviside_predict(X)
         # Checks if all values of prediction and y are equal
         return 100 * np.mean(prediction == y)
-
-
-# Creation, training and values of and perceptron
-and_perceptron = Perceptron(2)
-
-and_X = np.array([[-1, 1], [1, -1], [-1, -1], [1, 1]])
-and_y = np.array([-1, -1, -1, 1])
-
-and_perceptron.train(and_X, and_y)
-
-print("AND Weights: ", and_perceptron.weights[1:])
-print("AND Bias: ", and_perceptron.weights[0])
-print("AND Predictions: ", and_perceptron.heaviside_predict(and_X))
-
-print()
-
-# Creation, training and values of xor perceptron
-xor_perceptron = Perceptron(2)
-
-xor_X = np.array([[-1, 1], [1, -1], [-1, -1], [1, 1]])
-xor_y = np.array([1, 1, -1, -1])
-
-xor_perceptron.train(xor_X, xor_y)
-
-print("XOR Weights: ", xor_perceptron.weights[1:])
-print("XOR Bias: ", xor_perceptron.weights[0])
-print("XOR Predictions: ", xor_perceptron.heaviside_predict(xor_X))
