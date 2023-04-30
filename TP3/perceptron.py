@@ -12,7 +12,7 @@ class Perceptron:
     def activation(self, input):           # Heaviside predict
         value = np.dot(input, self.weights[1:]) + self.weights[0]
         return np.where(value >= 0, 1, -1)
-    
+
     def train(self, X, y):
         epochs = 0
         while epochs < self.max_epochs:

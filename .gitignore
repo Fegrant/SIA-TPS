@@ -135,3 +135,7 @@ dmypy.json
 # txt outputs
 *.txt
 *.csv
+
+# input files
+!/tp3/input_files/*.txt
+!/tp3/input_files/*.csv
