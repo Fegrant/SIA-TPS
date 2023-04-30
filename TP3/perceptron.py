@@ -33,7 +33,6 @@ class Perceptron:
                 delta_w = self.delta_w(prediction, Xmodified, solution)
 
                 self.weights += delta_w * input
-                print(self.weights)
             
             prediction = self.activation(Xmodified)
             if np.array_equal(y, prediction):
@@ -47,7 +46,7 @@ class Perceptron:
         print("Epochs: ", epochs)
 
     def delta_w(self, predict, X, y):
-        return (predict - y) * self.learning_rate
+        return self.learning_rate * (y - predict) 
         
     # Returns the accuracy of the perceptron on the given data. X and y must be the same length
     def error(self, X, y):

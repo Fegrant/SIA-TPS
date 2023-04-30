@@ -3,7 +3,7 @@ import numpy as np
 from perceptron import Perceptron, SimpleLinealPerceptron, SimpleNonLinealPerceptron
 
 
-def plot_decision_boundary_2d(X, Y, perceptron: Perceptron):
+def plot_decision_boundary_2d(X, Y, perceptron: Perceptron, title):
     # Define the range of x-axis and y-axis
     x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
     y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
@@ -21,7 +21,7 @@ def plot_decision_boundary_2d(X, Y, perceptron: Perceptron):
     plt.ylim(yy.min(), yy.max())
     plt.xlabel('X1')
     plt.ylabel('X2')
-    plt.title('Decision Boundary')
+    plt.title(title + ' Decision Boundary')
     plt.show()
 
 def plot_decision_boundary_3d(X, Y, perceptron: Perceptron):
