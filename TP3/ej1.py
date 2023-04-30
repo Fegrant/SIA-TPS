@@ -1,4 +1,3 @@
-from utils.parser import parse_csv_file, parse_txt_file
 from perceptron import Perceptron
 import matplotlib.pyplot as plt
 import numpy as np
@@ -13,7 +12,7 @@ and_perceptron.train(and_X, and_y)
 
 print("AND Weights: ", and_perceptron.weights[1:])
 print("AND Bias: ", and_perceptron.weights[0])
-print("AND Predictions: ", and_perceptron.heaviside_predict(and_X))
+print("AND Predictions: ", and_perceptron.activation(and_X))
 
 print()
 
@@ -27,7 +26,7 @@ xor_perceptron.train(xor_X, xor_y)
 
 print("XOR Weights: ", xor_perceptron.weights[1:])
 print("XOR Bias: ", xor_perceptron.weights[0])
-print("XOR Predictions: ", xor_perceptron.heaviside_predict(xor_X))
+print("XOR Predictions: ", xor_perceptron.activation(xor_X))
 
 
 # Define the range of x-axis and y-axis
@@ -36,10 +35,9 @@ y_min, y_max = and_X[:, 1].min() - 1, and_X[:, 1].max() + 1
 
 # Create a grid of points to evaluate the decision boundary
 xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1), np.arange(y_min, y_max, 0.1))
-Z = and_perceptron.heaviside_predict(np.c_[xx.ravel(), yy.ravel()])
+Z = and_perceptron.activation(np.c_[xx.ravel(), yy.ravel()])
 Z = Z.reshape(xx.shape)
 
-parse_txt_file('input_files/TP3-ej3-digitos.txt')
 
 # Plot the decision boundary and the data points
 plt.contourf(xx, yy, Z, cmap=plt.cm.RdBu, alpha=0.8)
@@ -52,14 +50,13 @@ plt.title('AND Perceptron')
 plt.show()
 
 
-
 # Define the range of x-axis and y-axis
 x_min, x_max = xor_X[:, 0].min() - 1, xor_X[:, 0].max() + 1
 y_min, y_max = xor_X[:, 1].min() - 1, xor_X[:, 1].max() + 1
 
 # Create a grid of points to evaluate the decision boundary
 xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1), np.arange(y_min, y_max, 0.1))
-Z = xor_perceptron.heaviside_predict(np.c_[xx.ravel(), yy.ravel()])
+Z = xor_perceptron.activation(np.c_[xx.ravel(), yy.ravel()])
 Z = Z.reshape(xx.shape)
 
 # Plot the decision boundary and the data points

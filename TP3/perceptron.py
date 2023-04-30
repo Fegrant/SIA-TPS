@@ -1,77 +1,65 @@
+from enum import IntEnum
 import numpy as np
 
-
-
+class ActivationFunc(IntEnum):
+    TANH = 1
+    LOGISTIC = 2
 
 class Perceptron:
-    def __init__(self, num_inputs, learning_rate=0.1, max_epochs=100):
+    def __init__(self, num_inputs, learning_rate=0.001, max_epochs=100, accepted_error=0.3):
         self.weights = np.zeros(num_inputs + 1)     # Extra for w0 (bias)
         self.learning_rate = learning_rate
         self.max_epochs = max_epochs
+        self.accepted_error = accepted_error
+
+    def predict(self, input):
+        bias = np.ones((input.shape[0], 1))
+        input_modified = np.concatenate((bias, input), axis=1)
+        return self.activation(input_modified)
     
     def activation(self, input):           # Heaviside predict
-        value = np.dot(input, self.weights[1:]) + self.weights[0]
+        value = np.dot(input, self.weights)
         return np.where(value >= 0, 1, -1)
 
     def train(self, X, y):
         epochs = 0
+        bias = np.ones((X.shape[0], 1))
+        Xmodified = np.concatenate((bias, X), axis=1) # Add bias to X
+    
         while epochs < self.max_epochs:
-            for input, solution in zip(X, y):           # zip(X, y) makes tuples of (input, solution) to iterate them
+            for input, solution in zip(Xmodified, y): # zip(X, y) makes tuples of (input, solution) to iterate them
                 prediction = self.activation(input)
                 
-                delta_w = self.delta_w(solution, input)
+                delta_w = self.delta_w(prediction, Xmodified, solution)
 
-                self.weights[0] += delta_w
-                self.weights[1:] += delta_w * input
+                self.weights += delta_w * input
+                print(self.weights)
             
-            prediction = self.activation(X)
+            prediction = self.activation(Xmodified)
             if np.array_equal(y, prediction):
                 print("Convergence reached at epoch", epochs)
                 break               # Finish by convergence
             
-            if self.error(X, y) == 100:
+            if self.error(Xmodified, y) < self.accepted_error:
                 print("100% accuracy reached at epoch", epochs)
                 break               # Finish by 100% accuracy on predicts
             epochs += 1
         print("Epochs: ", epochs)
 
-    def delta_w(self, y, xi):
-        return xi - y
+    def delta_w(self, predict, X, y):
+        return (predict - y) * self.learning_rate
         
     # Returns the accuracy of the perceptron on the given data. X and y must be the same length
     def error(self, X, y):
         prediction = self.activation(X)
-        return 100 * (1 - np.mean(prediction == y))       # Checks if all values of prediction and y are equal
+        return 1 - np.mean(prediction == y)       # Checks if all values of prediction and y are equal
 
 
 class SimpleLinealPerceptron(Perceptron):
+    # Idendity activation function
     def activation(self, input):                 # input might be a vector or scalar
-        value = np.dot(input, self.weights[1:]) + self.weights[0]
+        value = np.dot(input, self.weights)
         return value
-    
-    # def train(self, X, y):
-    #     epochs = 0
-    #     while epochs < self.max_epochs:
-    #         for input, solution in zip(X, y):           # zip(X, y) makes tuples of (input, solution) to iterate them
-    #             prediction = self.activation(input)
-
-    #             delta_w = self.learning_rate * (solution - prediction)
-
-    #             self.weights[0] += delta_w
-    #             self.weights[1:] += delta_w * input
-            
-    #         mse = self.error(X, y)
-    #         if mse < 0.001:    # TODO: Change this to a parameter
-    #             print("Convergence reached at epoch", epochs)
-    #             break               # Finish by convergence
-    
-    #         epochs += 1
-    #     print("Epochs: ", epochs)
-    
-
-    def delta_w(self, y, xi):
-        diff = super().delta_w(y, xi)
-        return self.learning_rate * diff * xi
     
     # Calculates the mean square error of the perceptron on the given data. X and y must be the same length.
     def error(self, X, y):
@@ -81,8 +69,8 @@ class SimpleLinealPerceptron(Perceptron):
 
 class SimpleNonLinealPerceptron(SimpleLinealPerceptron):
     
-    def __init__(self, num_inputs, learning_rate=0.1, max_epochs=100, beta=0.1, activation_func="tanh"):
-        super().__init__(num_inputs, learning_rate, max_epochs)
+    def __init__(self, num_inputs, learning_rate=0.1, max_epochs=100, accepted_error=0.3, beta=0.1, activation_func=ActivationFunc.TANH):
+        super().__init__(num_inputs, learning_rate, max_epochs, accepted_error)
         self.beta = beta
         self.activation_func = activation_func
     
@@ -103,20 +91,20 @@ class SimpleNonLinealPerceptron(SimpleLinealPerceptron):
         return 2 * self.beta * self.logistic_activation(input) * (1 - self.logistic_activation(input))
     
     def activation(self, input):
-        if self.activation_function == "tanh":
+        if self.activation_function == ActivationFunc.TANH:
             return self.tanh_activation(input)
-        elif self.activation_function == "logistic":
+        elif self.activation_function == ActivationFunc.LOGISTIC:
             return self.logistic_activation(input)
         else:
             raise ValueError("Activation function not supported")
     
     def derivative(self, input):
-        if self.activation_function == "tanh":
+        if self.activation_function == ActivationFunc.TANH:
             return self.tanh_derivative(input)
-        elif self.activation_function == "logistic":
+        elif self.activation_function == ActivationFunc.LOGISTIC:
             return self.logistic_derivative(input)
         else:
             raise ValueError("Activation function not supported")
         
-    def delta_w(self, y, xi):
-        pass
+    def delta_w(self, predict, X, y):
+        return super().delta_w(predict, X, y) * self.derivative(np.dot(X, y))
