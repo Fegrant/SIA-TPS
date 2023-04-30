@@ -1,3 +1,4 @@
+from utils.parser import parse_csv_file, parse_txt_file
 from perceptron import Perceptron
 import matplotlib.pyplot as plt
 import numpy as np
@@ -37,6 +38,8 @@ y_min, y_max = and_X[:, 1].min() - 1, and_X[:, 1].max() + 1
 xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1), np.arange(y_min, y_max, 0.1))
 Z = and_perceptron.heaviside_predict(np.c_[xx.ravel(), yy.ravel()])
 Z = Z.reshape(xx.shape)
+
+parse_txt_file('input_files/TP3-ej3-digitos.txt')
 
 # Plot the decision boundary and the data points
 plt.contourf(xx, yy, Z, cmap=plt.cm.RdBu, alpha=0.8)
