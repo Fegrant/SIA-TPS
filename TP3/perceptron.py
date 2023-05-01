@@ -1,5 +1,4 @@
 from enum import IntEnum
-from normalize import feature_scaling
 import numpy as np
 
 class ActivationFunc(IntEnum):
@@ -135,15 +134,6 @@ class SimpleNonLinealPerceptron(SimpleLinealPerceptron):
         
     def train(self, X, y):
         epochs = 0
-
-        if self.activation_func == ActivationFunc.TANH:
-            X = feature_scaling(X, -1, 1)
-            y = feature_scaling(y, -1, 1)
-        elif self.activation_func == ActivationFunc.LOGISTIC:
-            X = feature_scaling(X, 0, 1)
-            y = feature_scaling(y, 0, 1)
-        else:
-            raise ValueError("Activation function not supported")
 
         bias = np.ones((X.shape[0], 1))
         Xmodified = np.concatenate((bias, X), axis=1) # Add bias to X

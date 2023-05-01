@@ -4,6 +4,7 @@ from utils.linearBoundary import plot_decision_boundary_3d
 from utils.parser import parse_csv_file, parse_txt_file
 from perceptron import SimpleLinealPerceptron, SimpleNonLinealPerceptron
 from config import load_config
+from normalize import feature_scaling
 
 # Load config
 perceptron_config = load_config()
@@ -49,9 +50,19 @@ activation_function = no_lineal_perceptron_config["activation_function"]
 # Creation, training and values of non lineal perceptron
 non_lineal_perceptron = SimpleNonLinealPerceptron(num_inputs, learning_rate, epochs, accepted_error, beta, activation_function)
 
-mse = non_lineal_perceptron.train(X, y)
+
+# activation_function = 1 -> tanh
+if activation_function == 1:
+    ynorm = feature_scaling(y, -1, 1)
+# activation_function = 2 -> logistic
+elif activation_function == 2:
+    ynorm = feature_scaling(y, 0, 1)
+    
+
+mse = non_lineal_perceptron.train(X, ynorm)
 
 print("Non lineal Weights: ", non_lineal_perceptron.weights[1:])
 print("Non lineal Bias: ", non_lineal_perceptron.weights[0])
 print("Non lineal Predictions: ", non_lineal_perceptron.predict(X))
+print("Non lineal nomralized y: ", ynorm)
 print("Non lineal MSE after training: ", mse)
