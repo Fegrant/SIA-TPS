@@ -1,0 +1,32 @@
+{
+    "perceptron": {
+        "simple":{
+            "number_of_inputs": 2,
+            "epochs" : 10000,
+            "learning_rate" : 1,
+            "accepted_error": 0.05
+
+        },
+        "lineal": {
+            "number_of_inputs": 3,
+            "epochs" : 1000,
+            "learning_rate" : 0.005,
+            "beta": 0.1,
+            "accepted_error": 0.05
+
+        },
+        "no-lineal": {
+            "number_of_inputs": 3,
+            "epochs" : 1000,
+            "learning_rate" : 0.005,
+            "beta": 0.1,
+            "accepted_error": 0.05
+
+        },
+        "multilayer": {
+            "input_file": "./input_files/TP3-ej3-digitos.txt",
+            "expected_file": "./output/TP3-ej3-c-expected.txt"
+        }
+    }
+
+}

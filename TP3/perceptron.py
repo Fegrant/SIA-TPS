@@ -6,7 +6,7 @@ class ActivationFunc(IntEnum):
     LOGISTIC = 2
 
 class Perceptron:
-    def __init__(self, num_inputs, learning_rate=0.001, max_epochs=100, accepted_error=0.3):
+    def __init__(self, num_inputs, learning_rate=0.001, max_epochs=100, accepted_error=0.05):
         self.weights = np.zeros(num_inputs + 1)     # Extra for w0 (bias)
         self.learning_rate = learning_rate
         self.max_epochs = max_epochs
@@ -60,6 +60,28 @@ class SimpleLinealPerceptron(Perceptron):
         value = np.dot(input, self.weights)
         return value
     
+    def train(self, X, y):
+        epochs = 0
+        bias = np.ones((X.shape[0], 1))
+        Xmodified = np.concatenate((bias, X), axis=1) # Add bias to X
+    
+        while epochs < self.max_epochs:
+            for input, solution in zip(Xmodified, y): # zip(X, y) makes tuples of (input, solution) to iterate them
+                prediction = self.activation(input)
+                
+                delta_w = self.delta_w(prediction, Xmodified, solution)
+
+                self.weights += delta_w * input
+            
+            prediction = self.activation(Xmodified)
+                   
+            if self.error(Xmodified, y) < self.accepted_error:
+                print("Convergence reached at epoch", epochs)
+                break               # Finish by convergence
+            epochs += 1
+
+        print("Epochs: ", epochs)
+    
     # Calculates the mean square error of the perceptron on the given data. X and y must be the same length.
     def error(self, X, y):
         prediction = self.activation(X)
@@ -68,7 +90,7 @@ class SimpleLinealPerceptron(Perceptron):
 
 class SimpleNonLinealPerceptron(SimpleLinealPerceptron):
     
-    def __init__(self, num_inputs, learning_rate=0.1, max_epochs=100, accepted_error=0.3, beta=0.1, activation_func=ActivationFunc.TANH):
+    def __init__(self, num_inputs, learning_rate=0.1, max_epochs=100, accepted_error=0.05, beta=0.1, activation_func=ActivationFunc.TANH):
         super().__init__(num_inputs, learning_rate, max_epochs, accepted_error)
         self.beta = beta
         self.activation_func = activation_func

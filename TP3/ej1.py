@@ -1,10 +1,24 @@
 from perceptron import Perceptron
 from utils.linearBoundary import plot_decision_boundary_2d
+from config import load_config
+
 import matplotlib.pyplot as plt
 import numpy as np
 
+# Load config
+perceptron_config = load_config()
+
+# Pull out simple perceptron config
+simple_perceptron_config = perceptron_config["simple"]
+
+num_inputs = int(simple_perceptron_config["number_of_inputs"])
+epochs = int(simple_perceptron_config["epochs"])
+learning_rate = float(simple_perceptron_config["learning_rate"])
+accepted_error = float(simple_perceptron_config["accepted_error"])
+
+
 # Creation, training and values of and perceptron
-and_perceptron = Perceptron(2)
+and_perceptron = Perceptron(num_inputs, epochs, learning_rate, accepted_error)
 
 and_X = np.array([[-1, 1], [1, -1], [-1, -1], [1, 1]])
 and_y = np.array([-1, -1, -1, 1])
@@ -18,7 +32,7 @@ print("AND Predictions: ", and_perceptron.predict(and_X))
 print()
 
 # Creation, training and values of xor perceptron
-xor_perceptron = Perceptron(2)
+xor_perceptron = Perceptron(num_inputs, epochs, learning_rate, accepted_error)
 
 xor_X = np.array([[-1, 1], [1, -1], [-1, -1], [1, 1]])
 xor_y = np.array([1, 1, -1, -1])

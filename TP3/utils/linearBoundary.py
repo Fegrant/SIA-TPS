@@ -24,29 +24,28 @@ def plot_decision_boundary_2d(X, Y, perceptron: Perceptron, title):
     plt.title(title + ' Decision Boundary')
     plt.show()
 
+
 def plot_decision_boundary_3d(X, Y, perceptron: Perceptron):
-    # Define the range of x-axis, y-axis and z-axis
-    x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
-    y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
-    z_min, z_max = X[:, 2].min() - 1, X[:, 2].max() + 1
-
-    # Create a grid of points to evaluate the decision boundary
-    xx, yy, zz = np.meshgrid(np.arange(x_min, x_max, 0.1), np.arange(y_min, y_max, 0.1), np.arange(z_min, z_max, 0.1))
-
-    z_plot = (perceptron.weights[0] - perceptron.weights[1] * xx - perceptron.weights[2] * yy) / perceptron.weights[3]
-
-    print(z_plot)
-
-    # Plot the decision boundary and the data points
-    fig = plt.figure(figsize=(10, 8))
+    w0 = perceptron.weights[0]
+    w1 = perceptron.weights[1]
+    w2 = perceptron.weights[2]
+    w3 = perceptron.weights[3]
+    
+    # Plot the data points
+    fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    ax.scatter(X[:, 0], X[:, 1], X[:, 2], c=Y, cmap=plt.cm.Set1, edgecolor='k', s=100)
-    
-    # ax.plot_surface(xx, yy, zz, alpha=0.2, color='gray')
-    ax.plot_wireframe(xx, yy, z_plot, linewidth=1, alpha=0.8)
-    
-    ax.set_xlabel('X1')
-    ax.set_ylabel('X2')
-    ax.set_zlabel('X3')
-    plt.title('Decision Boundary')
+    ax.scatter(X[:, 0], X[:, 1], X[:, 2], c=Y)
+
+    # Plot the decision boundary
+    x1_range = np.linspace(np.min(X[:, 0]), np.max(X[:, 0]), 10)
+    x2_range = np.linspace(np.min(X[:, 1]), np.max(X[:, 1]), 10)
+    x1, x2 = np.meshgrid(x1_range, x2_range)
+    x3 = (-w1 * x1 - w2 * x2 - w0) / (w3)
+
+    ax.plot_surface(x1, x2, x3)
+
+    ax.set_xlabel('x1')
+    ax.set_ylabel('x2')
+    ax.set_zlabel('x3')
+    plt.title("Hiperplane decision boundary")
     plt.show()
