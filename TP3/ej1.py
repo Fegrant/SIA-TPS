@@ -16,9 +16,13 @@ epochs = int(simple_perceptron_config["epochs"])
 learning_rate = float(simple_perceptron_config["learning_rate"])
 accepted_error = float(simple_perceptron_config["accepted_error"])
 
+print("Number of inputs: ", num_inputs)
+print("Epochs: ", epochs)
+print("Learning rate: ", learning_rate)
+print("Accepted error: ", accepted_error)
 
 # Creation, training and values of and perceptron
-and_perceptron = Perceptron(num_inputs, epochs, learning_rate, accepted_error)
+and_perceptron = Perceptron(num_inputs, learning_rate, epochs, accepted_error)
 
 and_X = np.array([[-1, 1], [1, -1], [-1, -1], [1, 1]])
 and_y = np.array([-1, -1, -1, 1])
@@ -32,7 +36,7 @@ print("AND Predictions: ", and_perceptron.predict(and_X))
 print()
 
 # Creation, training and values of xor perceptron
-xor_perceptron = Perceptron(num_inputs, epochs, learning_rate, accepted_error)
+xor_perceptron = Perceptron(num_inputs, learning_rate, epochs, accepted_error)
 
 xor_X = np.array([[-1, 1], [1, -1], [-1, -1], [1, 1]])
 xor_y = np.array([1, 1, -1, -1])

@@ -1,4 +1,5 @@
 from enum import IntEnum
+from normalize import feature_scaling
 import numpy as np
 
 class ActivationFunc(IntEnum):
@@ -30,7 +31,7 @@ class Perceptron:
             for input, solution in zip(Xmodified, y): # zip(X, y) makes tuples of (input, solution) to iterate them
                 prediction = self.activation(input)
                 
-                delta_w = self.delta_w(prediction, Xmodified, solution)
+                delta_w = self.delta_w(prediction, solution)
 
                 self.weights += delta_w * input
             
@@ -40,13 +41,14 @@ class Perceptron:
                 break               # Finish by convergence
             
             if self.error(Xmodified, y) < self.accepted_error:
-                print("100% accuracy reached at epoch", epochs)
+                print(str(self.accepted_error) + " accuracy reached at epoch", epochs)
                 break               # Finish by 100% accuracy on predicts
             epochs += 1
         print("Epochs: ", epochs)
+        return self.error(Xmodified, y)
 
-    def delta_w(self, predict, X, y):
-        return self.learning_rate * (y - predict) 
+    def delta_w(self, predict, solution):
+        return self.learning_rate * (solution - predict) 
         
     # Returns the accuracy of the perceptron on the given data. X and y must be the same length
     def error(self, X, y):
@@ -69,7 +71,7 @@ class SimpleLinealPerceptron(Perceptron):
             for input, solution in zip(Xmodified, y): # zip(X, y) makes tuples of (input, solution) to iterate them
                 prediction = self.activation(input)
                 
-                delta_w = self.delta_w(prediction, Xmodified, solution)
+                delta_w = self.delta_w(prediction, solution)
 
                 self.weights += delta_w * input
             
@@ -81,6 +83,8 @@ class SimpleLinealPerceptron(Perceptron):
             epochs += 1
 
         print("Epochs: ", epochs)
+        return self.error(Xmodified, y)
+
     
     # Calculates the mean square error of the perceptron on the given data. X and y must be the same length.
     def error(self, X, y):
@@ -112,20 +116,56 @@ class SimpleNonLinealPerceptron(SimpleLinealPerceptron):
         return 2 * self.beta * self.logistic_activation(input) * (1 - self.logistic_activation(input))
     
     def activation(self, input):
-        if self.activation_function == ActivationFunc.TANH:
-            return self.tanh_activation(input)
-        elif self.activation_function == ActivationFunc.LOGISTIC:
-            return self.logistic_activation(input)
+        if self.activation_func == ActivationFunc.TANH:
+            dot = np.dot(input, self.weights)
+            return self.tanh_activation(dot)
+        elif self.activation_func == ActivationFunc.LOGISTIC:
+            dot = np.dot(input, self.weights)
+            return self.logistic_activation(dot)
         else:
             raise ValueError("Activation function not supported")
     
     def derivative(self, input):
-        if self.activation_function == ActivationFunc.TANH:
+        if self.activation_func == ActivationFunc.TANH:
             return self.tanh_derivative(input)
-        elif self.activation_function == ActivationFunc.LOGISTIC:
+        elif self.activation_func == ActivationFunc.LOGISTIC:
             return self.logistic_derivative(input)
         else:
             raise ValueError("Activation function not supported")
         
-    def delta_w(self, predict, X, y):
-        return super().delta_w(predict, X, y) * self.derivative(np.dot(X, y))
+    def train(self, X, y):
+        epochs = 0
+
+        if self.activation_func == ActivationFunc.TANH:
+            X = feature_scaling(X, -1, 1)
+            y = feature_scaling(y, -1, 1)
+        elif self.activation_func == ActivationFunc.LOGISTIC:
+            X = feature_scaling(X, 0, 1)
+            y = feature_scaling(y, 0, 1)
+        else:
+            raise ValueError("Activation function not supported")
+
+        bias = np.ones((X.shape[0], 1))
+        Xmodified = np.concatenate((bias, X), axis=1) # Add bias to X
+
+    
+        while epochs < self.max_epochs:
+            for input, solution in zip(Xmodified, y): # zip(X, y) makes tuples of (input, solution) to iterate them
+                prediction = self.activation(input)
+                
+                delta_w = self.delta_w(prediction, input, solution)
+
+                self.weights += delta_w * input
+            
+            prediction = self.activation(Xmodified)
+                   
+            if self.error(Xmodified, y) < self.accepted_error:
+                print("Convergence reached at epoch", epochs)
+                break               # Finish by convergence
+            epochs += 1
+
+        print("Epochs: ", epochs)
+        return self.error(Xmodified, y)
+        
+    def delta_w(self, predict, input, solution):
+        return self.learning_rate * (solution - predict) * self.derivative(np.dot(input, self.weights))
