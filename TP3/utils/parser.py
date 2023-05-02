@@ -7,4 +7,5 @@ def parse_csv_file(file: str):
 
 def parse_txt_file(file: str):
     df = pd.read_csv(file, header=None, sep=' ', usecols=[0, 1, 2, 3, 4])
-    return df.to_numpy()
+    arr = df.to_numpy()
+    return np.split(arr, 10)

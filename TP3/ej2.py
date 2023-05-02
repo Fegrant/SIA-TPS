@@ -1,5 +1,3 @@
-import numpy as np
-
 from utils.linearBoundary import plot_decision_boundary_3d
 from utils.parser import parse_csv_file, parse_txt_file
 from perceptron import SimpleLinealPerceptron, SimpleNonLinealPerceptron

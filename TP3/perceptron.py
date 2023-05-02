@@ -12,10 +12,16 @@ class Perceptron:
         self.max_epochs = max_epochs
         self.accepted_error = accepted_error
 
+    def add_bias(self, X):
+        if len(X.shape) == 1:  # If X is a 1D array (i.e., a vector)
+            X_bias = np.insert(X, 0, 1)
+        else:  # If X is a 2D array (i.e., a matrix)
+            X_bias = np.hstack((np.ones((X.shape[0], 1)), X))
+        return X_bias
+
     def predict(self, input):
-        bias = np.ones((input.shape[0], 1))
-        input_modified = np.concatenate((bias, input), axis=1)
-        return self.activation(input_modified)
+        X_bias = self.add_bias(input)
+        return self.activation(X_bias)
     
     def activation(self, input):           # Heaviside predict
         value = np.dot(input, self.weights)

@@ -16,11 +16,11 @@
         },
         "no-lineal": {
             "number_of_inputs": 3,
-            "epochs" : 1000,
-            "learning_rate" : 0.005,
+            "epochs" : 100000,
+            "learning_rate" : 0.01,
             "beta": 0.1,
-            "accepted_error": 0.05,
-            "activation_function": 1
+            "accepted_error": 0.001,
+            "activation_function": 2
         },
         "multilayer": {
             "input_file": "./input_files/TP3-ej3-digitos.txt",
