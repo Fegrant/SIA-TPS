@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from perceptron import Perceptron, SimpleLinealPerceptron, SimpleNonLinealPerceptron
-
+from perceptron import Perceptron
 
 def plot_decision_boundary_2d(X, Y, perceptron: Perceptron, title):
     # Define the range of x-axis and y-axis
