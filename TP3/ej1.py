@@ -1,4 +1,4 @@
-from perceptron import Perceptron
+from perceptron import Perceptron, UpdateMode
 from utils.linearBoundary import plot_decision_boundary_2d
 from config import load_config
 
@@ -22,7 +22,7 @@ print("Learning rate: ", learning_rate)
 print("Accepted error: ", accepted_error)
 
 # Creation, training and values of and perceptron
-and_perceptron = Perceptron(num_inputs, learning_rate, epochs, accepted_error)
+and_perceptron = Perceptron(num_inputs, learning_rate, epochs, accepted_error, UpdateMode.BATCH)
 
 and_X = np.array([[-1, 1], [1, -1], [-1, -1], [1, 1]])
 and_y = np.array([-1, -1, -1, 1])

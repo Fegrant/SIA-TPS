@@ -1,16 +1,21 @@
 from enum import IntEnum
 import numpy as np
 
+class UpdateMode(IntEnum):
+    BATCH = 1
+    ONLINE = 2
+
 class ActivationFunc(IntEnum):
     TANH = 1
     LOGISTIC = 2
 
 class Perceptron:
-    def __init__(self, num_inputs, learning_rate=0.001, max_epochs=100, accepted_error=0.05):
+    def __init__(self, num_inputs, learning_rate=0.001, max_epochs=100, accepted_error=0.05, update_mode=UpdateMode.ONLINE):
         self.weights = np.zeros(num_inputs + 1)     # Extra for w0 (bias)
         self.learning_rate = learning_rate
         self.max_epochs = max_epochs
         self.accepted_error = accepted_error
+        self.update_mode = update_mode
 
     def add_bias(self, X):
         if len(X.shape) == 1:  # If X is a 1D array (i.e., a vector)
@@ -33,21 +38,21 @@ class Perceptron:
         Xmodified = np.concatenate((bias, X), axis=1) # Add bias to X
     
         while epochs < self.max_epochs:
-            for input, solution in zip(Xmodified, y): # zip(X, y) makes tuples of (input, solution) to iterate them
-                prediction = self.activation(input)
-                
-                delta_w = self.delta_w(prediction, solution)
-
-                self.weights += delta_w * input
+            match self.update_mode:
+                case UpdateMode.ONLINE:
+                    for input, solution in zip(Xmodified, y): # zip(X, y) makes tuples of (input, solution) to iterate them
+                        prediction = self.activation(input)
+                        delta_w = self.delta_w(prediction, solution)
+                        self.weights += delta_w * input
+                case UpdateMode.BATCH:
+                    prediction = self.activation(Xmodified)
+                    delta_w = self.delta_w(prediction, y)      
+                    self.weights += np.dot(Xmodified.T, delta_w)
             
-            prediction = self.activation(Xmodified)
-            if np.array_equal(y, prediction):
+            actual_error = self.error(Xmodified, y)
+            if actual_error < self.accepted_error:
                 print("Convergence reached at epoch", epochs)
                 break               # Finish by convergence
-            
-            if self.error(Xmodified, y) < self.accepted_error:
-                print(str(self.accepted_error) + " accuracy reached at epoch", epochs)
-                break               # Finish by 100% accuracy on predicts
             epochs += 1
         print("Epochs: ", epochs)
         return self.error(Xmodified, y)
@@ -67,30 +72,29 @@ class SimpleLinealPerceptron(Perceptron):
         value = np.dot(input, self.weights)
         return value
     
-    def train(self, X, y):
-        epochs = 0
-        bias = np.ones((X.shape[0], 1))
-        Xmodified = np.concatenate((bias, X), axis=1) # Add bias to X
+    # def train(self, X, y):
+    #     epochs = 0
+    #     bias = np.ones((X.shape[0], 1))
+    #     Xmodified = np.concatenate((bias, X), axis=1) # Add bias to X
     
-        while epochs < self.max_epochs:
-            for input, solution in zip(Xmodified, y): # zip(X, y) makes tuples of (input, solution) to iterate them
-                prediction = self.activation(input)
+    #     while epochs < self.max_epochs:
+    #         for input, solution in zip(Xmodified, y): # zip(X, y) makes tuples of (input, solution) to iterate them
+    #             prediction = self.activation(input)
                 
-                delta_w = self.delta_w(prediction, solution)
+    #             delta_w = self.delta_w(prediction, solution)
 
-                self.weights += delta_w * input
-            
-            prediction = self.activation(Xmodified)
+    #             self.weights += delta_w * input
+
+    #         prediction = self.activation(Xmodified)
                    
-            if self.error(Xmodified, y) < self.accepted_error:
-                print("Convergence reached at epoch", epochs)
-                break               # Finish by convergence
-            epochs += 1
+    #         if self.error(Xmodified, y) < self.accepted_error:
+    #             print("Convergence reached at epoch", epochs)
+    #             break               # Finish by convergence
+    #         epochs += 1
 
-        print("Epochs: ", epochs)
-        return self.error(Xmodified, y)
+    #     print("Epochs: ", epochs)
+    #     return self.error(Xmodified, y)
 
-    
     # Calculates the mean square error of the perceptron on the given data. X and y must be the same length.
     def error(self, X, y):
         prediction = self.activation(X)
@@ -99,8 +103,8 @@ class SimpleLinealPerceptron(Perceptron):
 
 class SimpleNonLinealPerceptron(SimpleLinealPerceptron):
     
-    def __init__(self, num_inputs, learning_rate=0.1, max_epochs=100, accepted_error=0.05, beta=0.1, activation_func=ActivationFunc.TANH):
-        super().__init__(num_inputs, learning_rate, max_epochs, accepted_error)
+    def __init__(self, num_inputs, learning_rate=0.1, max_epochs=100, accepted_error=0.05, update_mode=UpdateMode.BATCH, beta=0.1, activation_func=ActivationFunc.TANH):
+        super().__init__(num_inputs, learning_rate, max_epochs, accepted_error, update_mode)
         self.beta = beta
         self.activation_func = activation_func
     
@@ -146,12 +150,16 @@ class SimpleNonLinealPerceptron(SimpleLinealPerceptron):
 
     
         while epochs < self.max_epochs:
-            for input, solution in zip(Xmodified, y): # zip(X, y) makes tuples of (input, solution) to iterate them
-                prediction = self.activation(input)
-                
-                delta_w = self.delta_w(prediction, input, solution)
-
-                self.weights += delta_w * input
+            match self.update_mode:
+                case UpdateMode.ONLINE:
+                    for input, solution in zip(Xmodified, y): # zip(X, y) makes tuples of (input, solution) to iterate them
+                        prediction = self.activation(input)
+                        delta_w = self.delta_w(prediction, input, solution)
+                        self.weights += delta_w * input
+                case UpdateMode.BATCH:
+                    prediction = self.activation(Xmodified)
+                    delta_w = self.delta_w(prediction, Xmodified, y)
+                    self.weights += np.dot(Xmodified.T, delta_w)
             
             prediction = self.activation(Xmodified)
                    
