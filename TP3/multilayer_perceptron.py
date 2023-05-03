@@ -55,11 +55,20 @@ class MultilayerPerceptron:
 
     # feedforward the input through the network and return the output layer
     def feedforward(self, batch_X):
-        self.activations = np.array(batch_X)
-        for i in range(len(self.hidden_layers)):
-            self.activations.append(self.sigmoid_activation(np.dot(self.activations[i], self.weights[i])))
-        self.activations.append(self.sigmoid_activation(np.dot(self.activations[-1], self.weights[-1])))
-        return self.activations[-1]
+        n_samples = batch_X.shape[0]
+        # Initialize the activations 3d matrix (n_samples, n_neurons, n_layers)
+        batch_X_3d = batch_X[np.newaxis, :, :]
+        print(batch_X_3d)
+
+        self.activations = batch_X_3d
+        # Concatenate the results of each prediction of each layer to the activations 3d matrix (n_samples, n_neurons, n_layers)
+        for i in range(n_samples):
+            for j in range(len(self.hidden_layers)):
+                layer_output = self.sigmoid_activation(np.dot(self.activations[i], self.weights[j]))
+                self.activations = np.concatenate((self.activations, layer_output[:, :, np.newaxis]), axis=2)
+            output = self.sigmoid_activation(np.dot(self.activations[:, :, -1], self.weights[-1]))
+            self.activations = np.concatenate((self.activations, output[:, :, np.newaxis]), axis=2)
+        return self.activations[:, :, -1]
 
     # backpropagate the error and update the weights
     def backpropagation(self, batch_X, batch_y):

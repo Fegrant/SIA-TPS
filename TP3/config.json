@@ -24,12 +24,13 @@
         },
         "multilayer": {
             "number_of_inputs": 2,
+            "number_of_outputs": 1,
             "epochs" : 1000,
             "learning_rate" : 0.1,
             "beta": 0.1,
-            "accepted_error": 0.05,
-            "activation_function": 1,
-            "hidden_layers": [2, 2]
+            "hidden_layers": [2],
+            "momentum": 0.8,
+            "batch_size": 1
         }
     },
     "ex2_test_size": 0.2,
