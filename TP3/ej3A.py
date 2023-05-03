@@ -14,7 +14,6 @@ learning_rate = float(multi_layer_perceptron_config["learning_rate"])
 beta = float(multi_layer_perceptron_config["beta"])
 hidden_layers = multi_layer_perceptron_config["hidden_layers"]
 momentum = float(multi_layer_perceptron_config["momentum"])
-batch_size = int(multi_layer_perceptron_config["batch_size"])
 
 # XOR inputs and outputs
 X_train = np.array([[0, 1], [1, 0], [0, 0], [1, 1]])
@@ -25,7 +24,7 @@ y_train = np.array([[1], [1], [0], [0]])
 mlp = MultilayerPerceptron(num_inputs, hidden_layers, num_outputs)
 
 # fit the MLP
-mlp.fit(X_train, y_train, epochs, learning_rate, beta, batch_size)
+mlp.fit(X_train, y_train, epochs, learning_rate, beta)
 
 # print the prediction for the four possible inputs
 print("XOR prediction")
