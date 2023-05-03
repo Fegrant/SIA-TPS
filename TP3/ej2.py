@@ -1,5 +1,5 @@
 from utils.parser import parse_csv_file
-from perceptron import SimpleLinealPerceptron, SimpleNonLinealPerceptron
+from perceptron import SimpleLinealPerceptron, SimpleNonLinealPerceptron, UpdateMode
 from config import load_config, ex2_test_size
 from normalize import feature_scaling
 
@@ -31,7 +31,7 @@ y_test = input_test[:,-1]
 # X_train, X_test = train_test_split(X, test_size=0.2)
 
 # Creation, training and values of lineal perceptron
-lineal_perceptron = SimpleLinealPerceptron(num_inputs, learning_rate, epochs, accepted_error)
+lineal_perceptron = SimpleLinealPerceptron(num_inputs, learning_rate, epochs, accepted_error, UpdateMode.BATCH)
 
 mse = lineal_perceptron.train(X_train, y_train)
 
@@ -55,7 +55,7 @@ beta = float(no_lineal_perceptron_config["beta"])
 activation_function = no_lineal_perceptron_config["activation_function"]
 
 # Creation, training and values of non lineal perceptron
-non_lineal_perceptron = SimpleNonLinealPerceptron(num_inputs, learning_rate, epochs, accepted_error, beta, activation_function)
+non_lineal_perceptron = SimpleNonLinealPerceptron(num_inputs, learning_rate, epochs, accepted_error, UpdateMode.BATCH, beta, activation_function)
 
 
 # activation_function = 1 -> tanh
