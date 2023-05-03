@@ -21,7 +21,7 @@ y_train = np.array([[1], [1], [0], [0]])
 
 
 # compute the XOR function using a MLP with 2 inputs, 2 hidden units and 1 output unit
-mlp = MultilayerPerceptron(num_inputs, hidden_layers, num_outputs)
+mlp = MultilayerPerceptron(num_inputs, hidden_layers, num_outputs, momentum)
 
 # fit the MLP
 mlp.fit(X_train, y_train, epochs, learning_rate, beta)
