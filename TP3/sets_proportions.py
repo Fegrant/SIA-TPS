@@ -1,7 +1,7 @@
 import copy
 from statistics import mean, stdev
 from utils.parser import parse_csv_file
-from perceptron import SimpleLinealPerceptron, SimpleNonLinealPerceptron, ActivationFunc
+from perceptron import SimpleLinealPerceptron, SimpleNonLinealPerceptron, ActivationFunc, UpdateMode
 from config import load_config, ex2_test_size
 from normalize import feature_scaling
 
@@ -49,7 +49,7 @@ for proportion in testSetProportions:
                                   'lineal': {'train': [], 'test':[]}
                                 }
 
-for i in range(2):
+for i in range(10):
         for testPercentage in testSetProportions:
                 input_train, input_test = train_test_split(input, test_size=testPercentage)
                 
@@ -61,17 +61,17 @@ for i in range(2):
 
                 inputCopy = copy.deepcopy(input)
 
-                lineal_perceptron = SimpleLinealPerceptron(lineal_num_inputs, lineal_learning_rate, lineal_epochs, lineal_accepted_error)
+                lineal_perceptron = SimpleLinealPerceptron(lineal_num_inputs, lineal_learning_rate, lineal_epochs, lineal_accepted_error, UpdateMode.BATCH)
                 train_lineal_mse, errors = lineal_perceptron.train(X_train, y_train)
                 test_lineal_mse, errors = lineal_perceptron.train(X_test, y_test)
         
-                non_lineal_logistic_perceptron = SimpleNonLinealPerceptron(no_lineal_num_inputs, no_lineal_learning_rate, no_lineal_epochs, no_lineal_accepted_error, beta, ActivationFunc.LOGISTIC)
+                non_lineal_logistic_perceptron = SimpleNonLinealPerceptron(no_lineal_num_inputs, no_lineal_learning_rate, no_lineal_epochs, no_lineal_accepted_error, UpdateMode.BATCH, beta, ActivationFunc.LOGISTIC)
                 ynorm_logistic = feature_scaling(y_train, 0, 1)
                 ynorm_test_logistic = feature_scaling(y_test, 0, 1)
                 train_logistic_mse, errors= non_lineal_logistic_perceptron.train(X_train, ynorm_logistic)
                 test_logistic_mse, errors = non_lineal_logistic_perceptron.train(X_test, ynorm_test_logistic)
                 
-                non_lineal_tanh_perceptron = SimpleNonLinealPerceptron(no_lineal_num_inputs, no_lineal_learning_rate, no_lineal_epochs, no_lineal_accepted_error, beta, ActivationFunc.TANH)
+                non_lineal_tanh_perceptron = SimpleNonLinealPerceptron(no_lineal_num_inputs, no_lineal_learning_rate, no_lineal_epochs, no_lineal_accepted_error, UpdateMode.BATCH, beta, ActivationFunc.TANH)
                 ynorm_tanh = feature_scaling(y_train, -1, 1)
                 ynorm_test_tanh = feature_scaling(y_test, -1, 1)
                 train_tanh_mse, errors = non_lineal_tanh_perceptron.train(X_train, ynorm_tanh)

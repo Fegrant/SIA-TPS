@@ -34,6 +34,7 @@ class Perceptron:
 
     def train(self, X, y):
         epochs = 0
+        errors = []
         bias = np.ones((X.shape[0], 1))
         Xmodified = np.concatenate((bias, X), axis=1) # Add bias to X
     
@@ -50,12 +51,16 @@ class Perceptron:
                     self.weights += np.dot(Xmodified.T, delta_w)
             
             actual_error = self.error(Xmodified, y)
+            errors.append(actual_error)
             if actual_error < self.accepted_error:
                 print("Convergence reached at epoch", epochs)
                 break               # Finish by convergence
             epochs += 1
+
+        error = self.error(Xmodified, y)
+        errors.append(error)
         print("Epochs: ", epochs)
-        return self.error(Xmodified, y)
+        return error, errors
 
     def delta_w(self, predict, solution):
         return self.learning_rate * (solution - predict) 
@@ -144,6 +149,7 @@ class SimpleNonLinealPerceptron(SimpleLinealPerceptron):
         
     def train(self, X, y):
         epochs = 0
+        errors = []
 
         bias = np.ones((X.shape[0], 1))
         Xmodified = np.concatenate((bias, X), axis=1) # Add bias to X
@@ -162,14 +168,18 @@ class SimpleNonLinealPerceptron(SimpleLinealPerceptron):
                     self.weights += np.dot(Xmodified.T, delta_w)
             
             prediction = self.activation(Xmodified)
-                   
-            if self.error(Xmodified, y) < self.accepted_error:
+
+            actual_error = self.error(Xmodified, y)
+            errors.append(actual_error)      
+            if actual_error < self.accepted_error:
                 print("Convergence reached at epoch", epochs)
                 break               # Finish by convergence
             epochs += 1
 
+        error = self.error(Xmodified, y)
+        errors.append(error)
         print("Epochs: ", epochs)
-        return self.error(Xmodified, y)
+        return error, errors
         
     def delta_w(self, predict, input, solution):
         return self.learning_rate * (solution - predict) * self.derivative(np.dot(input, self.weights))

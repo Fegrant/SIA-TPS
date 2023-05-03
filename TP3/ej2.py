@@ -3,6 +3,9 @@ from perceptron import SimpleLinealPerceptron, SimpleNonLinealPerceptron, Update
 from config import load_config, ex2_test_size
 from normalize import feature_scaling
 
+import numpy as np
+import matplotlib.pyplot as plt
+
 from sklearn.model_selection import train_test_split
 
 # Load config
@@ -33,12 +36,20 @@ y_test = input_test[:,-1]
 # Creation, training and values of lineal perceptron
 lineal_perceptron = SimpleLinealPerceptron(num_inputs, learning_rate, epochs, accepted_error, UpdateMode.BATCH)
 
-mse = lineal_perceptron.train(X_train, y_train)
+mse, errors = lineal_perceptron.train(X_train, y_train)
 
 print("Lineal Weights: ", lineal_perceptron.weights[1:])
 print("Lineal Bias: ", lineal_perceptron.weights[0])
 print("Lineal Predictions: ", lineal_perceptron.predict(X_test))
 print("Lineal MSE after training: ", mse)
+
+x = list(range(len(errors)))
+plt.xlabel("Epochs", fontsize=12)
+plt.ylabel("MSE", fontsize=12)
+plt.title("MSE - Lineal")
+plt.plot(x, errors, label='Error')
+plt.legend()
+plt.show()
 
 
 # TODO: COMO LOS DATOS NO SON DE CLASIFICACION (NO SON 0 Y 1) NO SE PUEDE HACER UNA LINEA DE DECISION, POR LO QUE NO TIENE MUCHO SENTIDO ESTE GRAFICO DE HIPERPLANO
@@ -68,10 +79,22 @@ elif activation_function == 2:
     ynorm_test = feature_scaling(y_test, 0, 1)
     
 
-mse = non_lineal_perceptron.train(X_train, ynorm)
+mse, errors = non_lineal_perceptron.train(X_train, ynorm)
 
 print("Non lineal Weights: ", non_lineal_perceptron.weights[1:])
 print("Non lineal Bias: ", non_lineal_perceptron.weights[0])
 print("Non lineal Predictions: ", non_lineal_perceptron.predict(X_test))
 print("Non lineal normalized y: ", ynorm_test)
 print("Non lineal MSE after training: ", mse)
+
+x = list(range(len(errors)))
+plt.xlabel("Epochs", fontsize=12)
+plt.ylabel("MSE", fontsize=12)
+if activation_function == 1:
+    plt.title("MSE - Tangente Hiperbolica")
+elif activation_function == 2:
+    plt.title("MSE - Logistica")
+plt.plot(x, errors, label='Error')
+plt.legend()
+plt.show()
+
