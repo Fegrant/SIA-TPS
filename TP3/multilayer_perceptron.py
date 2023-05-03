@@ -12,9 +12,11 @@ class MultilayerPerceptron:
     # initialize weights with random values
     def init_weights(self):
         self.weights = np.random.randn(self.n_inputs, self.hidden_layers[0])
+        print(self.weights)
         for i in range(1, len(self.hidden_layers)):
-            self.weights = np.concatenate((self.weights, np.random.randn(self.hidden_layers[i-1], self.hidden_layers[i])), axis=1)
-        self.weights = np.concatenate((self.weights, np.random.randn(self.hidden_layers[-1], self.n_outputs)), axis=1)
+            self.weights = np.concatenate((self.weights, np.random.randn(self.hidden_layers[i], self.hidden_layers[i-1])), axis=0)
+        self.weights = np.concatenate((self.weights, np.random.randn(self.n_outputs, self.hidden_layers[-1])), axis=0)
+        print(self.weights)
         if self.momentum is not None:
             self.prev_weights = copy.deepcopy(self.weights)
 
@@ -45,6 +47,8 @@ class MultilayerPerceptron:
     def feedforward(self, X):
         self.activations = [X]
         for i in range(len(self.hidden_layers) + 1):
+            print(self.activations[i])
+            print(self.weights[i])
             self.activations.append(self.sigmoid_activation(np.dot(self.activations[i], self.weights[i])))
         return self.activations[-1]
         
@@ -55,23 +59,30 @@ class MultilayerPerceptron:
         output_error = Y - self.activations[-1]
 
         # Compute the gradient at the output layer
-        output_layer_gradient = output_error * self._sigmoid_activation_derivative(self.activations[-1])
+        output_layer_gradient = output_error * self.sigmoid_activation_derivative(self.activations[-1])
 
         # Compute the gradient at the hidden layers
         hidden_layer_gradients = []
         for i in range(len(self.hidden_layers), 0, -1):
+            print("hola xd")
+            print(hidden_layer_gradients)
             if i == len(self.hidden_layers):
-                gradient = np.dot(output_layer_gradient, self.weights[:, sum(self.hidden_layers[:-1]):].T) * self._sigmoid_activation_derivative(self.activations[i])
+                gradient = np.dot(output_layer_gradient, self.weights[:, sum(self.hidden_layers[:-1]):].T) * self.sigmoid_activation_derivative(self.activations[i])
             else:
-                gradient = np.dot(hidden_layer_gradients[-1], self.weights[:, sum(self.hidden_layers[i:]):sum(self.hidden_layers[i+1:])].T) * self._sigmoid_activation_derivative(self.activations[i])
+                gradient = np.dot(hidden_layer_gradients[-1], self.weights[:, sum(self.hidden_layers[i:]):sum(self.hidden_layers[i+1:])].T) * self.sigmoid_activation_derivative(self.activations[i])
             hidden_layer_gradients.append(gradient)
 
         # Reverse the order of the gradients for convenience
         hidden_layer_gradients.reverse()
 
+        print("Hola")
+        print(hidden_layer_gradients)
+
         # Update the weights using the computed gradients
         for i in range(len(self.hidden_layers)+1):
             if i == 0:
+                print(X.T)
+                print(hidden_layer_gradients[i])
                 weight_update = np.dot(X.T, hidden_layer_gradients[i])
             elif i == len(self.hidden_layers):
                 weight_update = np.dot(self.activations[-2].T, output_layer_gradient)
