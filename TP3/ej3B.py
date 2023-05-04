@@ -29,7 +29,7 @@ y= np.array([[1], [0], [1], [0], [1], [0], [1], [0], [1], [0]])
 
 X = input.reshape(10, 35)
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
 
 # mlp.train(X_train, y_train, epochs, learning_rate, convergence_threshold=0.001)
 
@@ -47,21 +47,80 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
 
 # plot mean error change learning rate
-learning_rates = np.arange(0.01, 0.2, 0.01)
-mean_errors = []
+learning_rates = np.arange(0.05, 0.8, 0.05)
+mean_errors_3b = []
 for learning_rate in learning_rates:
-    mlp = MultilayerPerceptron([35] + [10] + [1])
-    mlp.train(X_train, y_train, epochs, learning_rate, convergence_threshold=0.0001)
+    for i in range(10):
+        mlp = MultilayerPerceptron([35] + [10] + [1])
+        mlp.train(X_train, y_train, epochs, learning_rate, convergence_threshold=0.001)
+        errors = []
+        for i in range(len(X_test)):
+            prediction = mlp.predict(X_test[i])
+            error = np.abs(prediction - y_test[i])
+            errors.append(error)
+    mean_errors_3b.append(np.mean(errors))
+       
+
+plt.plot(learning_rates, mean_errors_3b)
+plt.xlabel('Learning rate')
+plt.ylabel('Mean error')
+plt.savefig('plots/TP3-ej3b1.png')
+
+
+# plot mean error changing inner layer size
+inner_layer_sizes = np.arange(5, 20, 1)
+mean_errors_3b2 = []
+for inner_layer_size in inner_layer_sizes:
+    mlp = MultilayerPerceptron([35] + inner_layer_size + [1])
+    mlp.train(X_train, y_train, epochs, learning_rate, convergence_threshold=0.001)
     errors = []
     for i in range(len(X_test)):
         prediction = mlp.predict(X_test[i])
         error = np.abs(prediction - y_test[i])
         errors.append(error)
-    mean_errors.append(np.mean(errors))
+    mean_errors_3b2.append(np.mean(errors))
 
-plt.plot(learning_rates, mean_errors)
-plt.xlabel('Learning rate')
+plt.clf()
+plt.plot(inner_layer_sizes, mean_errors_3b2)
+plt.xlabel('Inner layer size')
 plt.ylabel('Mean error')
-plt.show()
+plt.savefig('plots/TP3-ej3b2.png')
 
+# plot mean error changing epochs
+epochs = np.arange(100, 10000, 100)
+mean_errors_3b3 = []
+for epoch in epochs:
+    mlp = MultilayerPerceptron([35] + [10] + [1])
+    mlp.train(X_train, y_train, epoch, learning_rate, convergence_threshold=0.001)
+    errors = []
+    for i in range(len(X_test)):
+        prediction = mlp.predict(X_test[i])
+        error = np.abs(prediction - y_test[i])
+        errors.append(error)
+    mean_errors_3b3.append(np.mean(errors))
 
+plt.clf()
+plt.plot(epochs, mean_errors_3b3)
+plt.xlabel('Epochs')
+plt.ylabel('Mean error')
+plt.savefig('plots/TP3-ej3b3.png')
+
+# plot mean error with 2 hidden layers and change neurons
+inner_layer_sizes = np.arange(5, 20, 1)
+mean_errors_3b4 = []
+for learning_rate in learning_rates:
+    for i in range(10):
+        mlp = MultilayerPerceptron([35] + inner_layer_sizes + [1])
+        mlp.train(X_train, y_train, epochs, learning_rate, convergence_threshold=0.001)
+        errors = []
+        for i in range(len(X_test)):
+            prediction = mlp.predict(X_test[i])
+            error = np.abs(prediction - y_test[i])
+            errors.append(error)
+    mean_errors_3b4.append(np.mean(errors))
+
+plt.clf()
+plt.plot(inner_layer_sizes, mean_errors_3b4)
+plt.xlabel('Inner layers size')
+plt.ylabel('Mean error')
+plt.savefig('plots/TP3-ej3b4.png')

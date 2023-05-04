@@ -12,10 +12,14 @@ def load_config():
 def ex2_test_size():
     with open('config.json') as json_file:
         config = json.load(json_file)
-        return config['ex2_test_size']
-
+        return int(config['ex2_test_size'])
 
 def ex3_test_size():
     with open('config.json') as json_file:
         config = json.load(json_file)
-        return config['ex3_test_size']
+        return int(config['ex3_test_size'])
+
+def ex3c_noise():
+    with open('config.json') as json_file:
+        config = json.load(json_file)
+        return float(config['ex3c_noise'])
