@@ -38,12 +38,15 @@ momentum = float(multi_layer_perceptron_config["momentum"])
 # compute the XOR function using a MLP with 2 inputs, 2 hidden units and 1 output unit
 mlp = MultilayerPerceptron([35] + hidden_layers + [10], momentum)
 
+print(input)
+print()
+
 input_train, input_test = train_test_split(input, test_size=0.2)
 
 X_train = input_train[:][0]
 y_train = input_train[:][1]
 
-X_test = input_test[0]
+X_test = input_test[:,-1]
 y_test = input_test[1]
 
 # X_train = input_train[:,:-1]
