@@ -51,6 +51,7 @@ learning_rates = np.arange(0.05, 0.8, 0.05)
 mean_errors_3b = []
 for learning_rate in learning_rates:
     for i in range(10):
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
         mlp = MultilayerPerceptron([35] + [10] + [1])
         mlp.train(X_train, y_train, epochs, learning_rate, convergence_threshold=0.001)
         errors = []
@@ -71,6 +72,7 @@ plt.savefig('plots/TP3-ej3b1.png')
 inner_layer_sizes = np.arange(5, 20, 1)
 mean_errors_3b2 = []
 for inner_layer_size in inner_layer_sizes:
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
     mlp = MultilayerPerceptron([35] + inner_layer_size + [1])
     mlp.train(X_train, y_train, epochs, learning_rate, convergence_threshold=0.001)
     errors = []
@@ -90,6 +92,7 @@ plt.savefig('plots/TP3-ej3b2.png')
 epochs = np.arange(100, 10000, 100)
 mean_errors_3b3 = []
 for epoch in epochs:
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
     mlp = MultilayerPerceptron([35] + [10] + [1])
     mlp.train(X_train, y_train, epoch, learning_rate, convergence_threshold=0.001)
     errors = []
@@ -109,8 +112,9 @@ plt.savefig('plots/TP3-ej3b3.png')
 inner_layer_sizes = np.arange(5, 20, 1)
 mean_errors_3b4 = []
 for learning_rate in learning_rates:
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
     for i in range(10):
-        mlp = MultilayerPerceptron([35] + inner_layer_sizes + [1])
+        mlp = MultilayerPerceptron([35] + [inner_layer_sizes, inner_layer_sizes] + [1])
         mlp.train(X_train, y_train, epochs, learning_rate, convergence_threshold=0.001)
         errors = []
         for i in range(len(X_test)):
