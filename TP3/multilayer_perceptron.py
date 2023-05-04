@@ -65,4 +65,4 @@ class MultilayerPerceptron:
         return self.feedforward(X)
 
     def mse(self, y_true, y_pred):
-        return np.mean(np.square(y_true - y_pred)) 
+        return np.mean(np.square(y_true - y_pred))

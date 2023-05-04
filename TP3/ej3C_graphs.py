@@ -165,47 +165,124 @@ runs = 10
 #     for i in np.arange(len(errors)):
 #         writer.writerow([noise_rates[i], errors[i], errors_std[i]])
 
-inner_perceptrons = np.arange(10, 50, 5)
+# inner_perceptrons = np.arange(10, 50, 5)
+# errors = []
+# errors_std = []
+# for perceptrons in inner_perceptrons:
+#     rate_errors = []
+#     for i in np.arange(runs):
+#         mlp = MultilayerPerceptron([35] + [perceptrons] + [perceptrons] + [10], momentum)
+#         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+
+#         set_size = len(X)
+#         train_set_size = len(X_train)
+#         test_set_size = set_size - train_set_size
+
+#         # Xt = add_noise(X, noise)
+#         mlp.train(X, y, epochs, learning_rate)
+
+#         mlp_errors = []
+
+#         for i in np.arange(set_size):
+#             predicted_values = mlp.predict(X[i])[0]
+#             # Averiguo cual es el valor que quiero
+#             highest_error = 0
+#             for j in np.arange(10):
+#                 if predicted_values[j] > highest_error and y[i][j] != 1:
+#                     highest_error = predicted_values[j]
+#                 if y[i][j] == 1:
+#                     num_expected = j
+#             error = 1 - (predicted_values[num_expected] - highest_error) if predicted_values[num_expected] > highest_error else 1
+#             mlp_errors.append(error)
+#         rate_errors.append(np.mean(mlp_errors))
+#     rate_errors_np = np.array(rate_errors)
+#     errors.append(np.mean(rate_errors_np))
+#     errors_std.append(np.std(rate_errors_np))
+
+# print(errors)
+# print(errors_std)
+
+# with open('inner_layers.csv', 'w') as file:
+#     writer = csv.writer(file)
+#     writer.writerow(['perceptron_amount', 'error', 'error_std'])
+#     rate_count = 0
+#     rate_idx = 0
+#     for i in np.arange(len(errors)):
+#         writer.writerow([inner_perceptrons[i], errors[i], errors_std[i]])
+
+generalization_errors = []
+generalization_std = []
+
 errors = []
-errors_std = []
-for perceptrons in inner_perceptrons:
-    rate_errors = []
-    for i in np.arange(runs):
-        mlp = MultilayerPerceptron([35] + [perceptrons] + [perceptrons] + [10], momentum)
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+for i in np.arange(runs):
+    mlp = MultilayerPerceptron([35] + [25] + [25] + [10], momentum)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
 
-        set_size = len(X)
-        train_set_size = len(X_train)
-        test_set_size = set_size - train_set_size
+    set_size = len(X)
+    train_set_size = len(X_train)
+    test_set_size = set_size - train_set_size
 
-        # Xt = add_noise(X, noise)
-        mlp.train(X, y, epochs, learning_rate)
+    # Xt = add_noise(X, noise)
+    mlp.train(X, y, epochs, learning_rate)
 
-        mlp_errors = []
+    mlp_errors = []
 
-        for i in np.arange(set_size):
-            predicted_values = mlp.predict(X[i])[0]
-            # Averiguo cual es el valor que quiero
-            highest_error = 0
-            for j in np.arange(10):
-                if predicted_values[j] > highest_error and y[i][j] != 1:
-                    highest_error = predicted_values[j]
-                if y[i][j] == 1:
-                    num_expected = j
-            error = 1 - (predicted_values[num_expected] - highest_error) if predicted_values[num_expected] > highest_error else 1
-            mlp_errors.append(error)
-        rate_errors.append(np.mean(mlp_errors))
-    rate_errors_np = np.array(rate_errors)
-    errors.append(np.mean(rate_errors_np))
-    errors_std.append(np.std(rate_errors_np))
+    for i in np.arange(set_size):
+        predicted_values = mlp.predict(X[i])[0]
+        # Averiguo cual es el valor que quiero
+        highest_error = 0
+        for j in np.arange(10):
+            if predicted_values[j] > highest_error and y[i][j] != 1:
+                highest_error = predicted_values[j]
+            if y[i][j] == 1:
+                num_expected = j
+        error = 1 - (predicted_values[num_expected] - highest_error) if predicted_values[num_expected] > highest_error else 1
+        mlp_errors.append(error)
+    errors.append(np.mean(np.array(mlp_errors)))
 
-print(errors)
-print(errors_std)
+generalization_errors.append(np.mean(np.array(errors)))
+generalization_std.append(np.std(np.array(errors)))
 
-with open('inner_layers.csv', 'w') as file:
+
+errors = []
+for i in np.arange(runs):
+    mlp = MultilayerPerceptron([35] + [25] + [25] + [10], momentum)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+
+    set_size = len(X)
+    train_set_size = len(X_train)
+    test_set_size = set_size - train_set_size
+
+    # Xt = add_noise(X, noise)
+    mlp.train(X_train, y_train, epochs, learning_rate)
+
+    mlp_errors = []
+
+    for i in np.arange(test_set_size):
+        predicted_values = mlp.predict(X_test[i])[0]
+        # Averiguo cual es el valor que quiero
+        highest_error = 0
+        for j in np.arange(10):
+            if predicted_values[j] > highest_error and y_test[i][j] != 1:
+                highest_error = predicted_values[j]
+            if y_test[i][j] == 1:
+                num_expected = j
+        error = 1 - (predicted_values[num_expected] - highest_error) if predicted_values[num_expected] > highest_error else 1
+        mlp_errors.append(error)
+    errors.append(np.mean(np.array(mlp_errors)))
+
+generalization_errors.append(np.mean(np.array(errors)))
+generalization_std.append(np.std(np.array(errors)))
+
+
+with open('generalization.csv', 'w') as file:
     writer = csv.writer(file)
-    writer.writerow(['perceptron_amount', 'error', 'error_std'])
+    writer.writerow(['generalization', 'error', 'error_std'])
     rate_count = 0
     rate_idx = 0
-    for i in np.arange(len(errors)):
-        writer.writerow([inner_perceptrons[i], errors[i], errors_std[i]])
+    for i in np.arange(len(generalization_errors)):
+        if i == 0:
+            generalization = '3c_no'
+        else:
+            generalization = '3c_yes'
+        writer.writerow([generalization, generalization_errors[i], generalization_std[i]])

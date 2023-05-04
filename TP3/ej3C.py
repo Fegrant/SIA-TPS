@@ -1,8 +1,8 @@
 import numpy as np
 
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_score
 from config import load_config, ex3c_noise
-from multilayer_perceptron import MultilayerPerceptron
+from multilayer_perceptron import MultilayerPerceptron, MultilayerPerceptronFit
 from utils.parser import parse_txt_file
 # determinate the number from matrix using mlp
 
@@ -80,7 +80,6 @@ mlp.train(X, y, epochs, learning_rate)
 # print the prediction for the four possible inputs
 print("Numbers prediction")
 
-
 # Con ~<0.6 aunque el error es alto, podemos diferenciar el número
 for i in np.arange(set_size):
     predicted_values = mlp.predict(X[i])[0]
@@ -93,3 +92,11 @@ for i in np.arange(set_size):
             num_expected = j
     error = 1 - (predicted_values[num_expected] - highest_error) if predicted_values[num_expected] > highest_error else 1
     print('Error: {}'.format(error))
+
+mlp = MultilayerPerceptronFit([35] + hidden_layers + [10], momentum)
+
+scores = cross_val_score(mlp, X, y, cv=5)
+
+print(scores)
+
+print("Exactitud de la validación cruzada: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
