@@ -20,7 +20,6 @@ epochs = int(lineal_perceptron_config["epochs"])
 learning_rate = float(lineal_perceptron_config["learning_rate"])
 accepted_error = float(lineal_perceptron_config["accepted_error"])
 
-
 input = parse_csv_file('input_files/TP3-ej2-conjunto.csv')
 
 input_train, input_test = train_test_split(input, test_size=test_size)
@@ -43,13 +42,15 @@ print("Lineal Bias: ", lineal_perceptron.weights[0])
 print("Lineal Predictions: ", lineal_perceptron.predict(X_test))
 print("Lineal MSE after training: ", mse)
 
-x = list(range(len(errors)))
-plt.xlabel("Epochs", fontsize=12)
-plt.ylabel("MSE", fontsize=12)
-plt.title("MSE - Lineal")
-plt.plot(x, errors, label='Error')
-plt.legend()
-plt.show()
+#PLOT ERROR
+
+# x = list(range(len(errors)))
+# plt.xlabel("Epochs", fontsize=12)
+# plt.ylabel("MSE", fontsize=12)
+# plt.title("MSE - Lineal")
+# plt.plot(x, errors, label='Error')
+# plt.legend()
+# plt.show()
 
 
 # TODO: COMO LOS DATOS NO SON DE CLASIFICACION (NO SON 0 Y 1) NO SE PUEDE HACER UNA LINEA DE DECISION, POR LO QUE NO TIENE MUCHO SENTIDO ESTE GRAFICO DE HIPERPLANO
@@ -87,14 +88,16 @@ print("Non lineal Predictions: ", non_lineal_perceptron.predict(X_test))
 print("Non lineal normalized y: ", ynorm_test)
 print("Non lineal MSE after training: ", mse)
 
-x = list(range(len(errors)))
-plt.xlabel("Epochs", fontsize=12)
-plt.ylabel("MSE", fontsize=12)
-if activation_function == 1:
-    plt.title("MSE - Tangente Hiperbolica")
-elif activation_function == 2:
-    plt.title("MSE - Logistica")
-plt.plot(x, errors, label='Error')
-plt.legend()
-plt.show()
+#PLOT ERROR
+
+# x = list(range(len(errors)))
+# plt.xlabel("Epochs", fontsize=12)
+# plt.ylabel("MSE", fontsize=12)
+# if activation_function == 1:
+#     plt.title("MSE - Tangente Hiperbolica")
+# elif activation_function == 2:
+#     plt.title("MSE - Logistica")
+# plt.plot(x, errors, label='Error')
+# plt.legend()
+# plt.show()
 

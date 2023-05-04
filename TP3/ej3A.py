@@ -1,6 +1,6 @@
 import numpy as np
 from config import load_config
-from multilayer_perceptron import MultilayerPerceptron
+from multilayer_perceptron import MultilayerPerceptron, MLP
 
 # Read from config.json file
 config = load_config()
