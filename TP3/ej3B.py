@@ -1,10 +1,10 @@
 import numpy as np
 from multilayer_perceptron import MultilayerPerceptron
 from config import load_config
-from utils.parser import parse_txt_file_3b
+from utils.parser import parse_txt_file
 from sklearn.model_selection import train_test_split
 
-ytrain = np.array([[1], [0], [1], [0], [1], [0], [1], [0], [1], [0]])
+
 
 # create the perceptron
 config = load_config()
@@ -19,17 +19,13 @@ hidden_layers = multi_layer_perceptron_config["hidden_layers"]
 
 mlp = MultilayerPerceptron([35] + [10] + [1])
 
-input = parse_txt_file_3b('input_files/TP3-ej3-digitos.txt')
+input = parse_txt_file('input_files/TP3-ej3-digitos.txt')
 
-print(input)
+ytrain = np.array([[1], [0], [1], [0], [1], [0], [1], [0], [1], [0]])
 
-input_train, input_test = train_test_split(input, test_size=0.2)
+X = input.reshape(10, 35)
 
-X_train = input_train[:,:-1]
-y_train = input_train[:,-1]
-
-X_test = input_test[:,:-1]
-y_test = input_test[:,-1]
+X_train, X_test, y_train, y_test = train_test_split(X, ytrain, test_size=0.2)
 
 mlp.train(X_train, y_train, epochs, learning_rate)
 
