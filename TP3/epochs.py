@@ -1,3 +1,4 @@
+from utils.linearBoundary import plot_decision_boundary_2d
 import numpy as np
 import matplotlib.pyplot as plt
 from config import load_config
@@ -24,16 +25,19 @@ y_train = np.array([[1], [1], [0], [0]])
 mlp = MultilayerPerceptron(
     [num_inputs] + hidden_layers + [num_outputs], momentum)
 
+plot_decision_boundary_2d( X_train, y_train, mlp, "XOR")
+
 # MSE vs Epochs
 errors = []
-for i in range(1, 10):
-    epochs = i * 100
-    mlp.train(X_train, y_train, epochs, learning_rate, beta)
+epochs = []
+for i in range(1000):
+    epochs.append(i)
+    mlp.train(X_train, y_train, i, learning_rate, beta)
     errors.append(mlp.mse(y_train, mlp.predict(X_train)))
-
-plt.plot(range(101, 1001, 100), errors)
-plt.legend()
+    
 plt.ylabel('MSE')
 plt.xlabel('Epochs')
 plt.title('MSE vs Epochs')
+plt.plot(epochs, errors, label='MSE')
+plt.legend()
 plt.show()
