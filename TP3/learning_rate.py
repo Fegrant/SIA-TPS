@@ -22,11 +22,12 @@ y_train = np.array([[1], [1], [0], [0]])
 
 
 # compute the XOR function using a MLP with 2 inputs, 2 hidden units and 1 output unit
-mlp = MultilayerPerceptron(num_inputs, hidden_layers, num_outputs, momentum)
+mlp = MultilayerPerceptron(
+    [num_inputs] + hidden_layers + [num_outputs], momentum)
 errors = []
 for i in range(1, 10):
     learning_rate = i / 10
-    mlp.fit(X_train, y_train, epochs, learning_rate, beta)
+    mlp.train(X_train, y_train, epochs, learning_rate, beta)
     errors.append(mlp.mse(y_train, mlp.predict(X_train)))
 
 print(errors)
@@ -37,3 +38,5 @@ plt.xlabel('Learning rate')
 
 plt.title('Learning rate effect on MSE')
 plt.show()
+# liste de 0 à 1 chaque 0,1
+[0.1, 0.2, 0.3, 0.4, 0.5]

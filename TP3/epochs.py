@@ -21,16 +21,17 @@ y_train = np.array([[1], [1], [0], [0]])
 
 
 # compute the XOR function using a MLP with 2 inputs, 2 hidden units and 1 output unit
-mlp = MultilayerPerceptron(num_inputs, hidden_layers, num_outputs, momentum)
+mlp = MultilayerPerceptron(
+    [num_inputs] + hidden_layers + [num_outputs], momentum)
 
 # MSE vs Epochs
 errors = []
 for i in range(1, 10):
     epochs = i * 100
-    mlp.fit(X_train, y_train, epochs, learning_rate, beta)
+    mlp.train(X_train, y_train, epochs, learning_rate, beta)
     errors.append(mlp.mse(y_train, mlp.predict(X_train)))
 
-plt.plot(errors)
+plt.plot(range(101, 1001, 100), errors)
 plt.legend()
 plt.ylabel('MSE')
 plt.xlabel('Epochs')
