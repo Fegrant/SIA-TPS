@@ -29,11 +29,11 @@
             "epochs" : 10000,
             "learning_rate" : 0.01,
             "beta": 0.1,
-            "convergence_threshold": 0.001,
+            "convergence_threshold": 0.005,
             "momentum": 0.9
         }
     },
     "ex2_test_size": 0.2,
     "ex3_test_size": 0.25,
-    "ex3c_noise": 0.1
+    "ex3c_noise": 0.5
 }

@@ -137,3 +137,46 @@ plt.errorbar(mean_errors_3b4, mean_errors_3b4, yerr=std_errors_3b4, fmt='o')
 plt.xlabel('Inner layers size')
 plt.ylabel('Mean error')
 plt.savefig('plots/TP3-ej3b4.png')
+
+
+# Define the learning rates and epochs
+learning_rates = [0.001, 0.01, 0.05, 0.1]
+epochs_array = np.arange(0, 5000, 100)
+
+# Initialize an empty list to store the mean errors
+mean_errors = []
+
+# Loop over the learning rates and epochs
+for learning_rate in learning_rates:
+    error_list = []
+    for epochs in epochs_array:
+        # Split the data into train and test sets
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+        
+        # Train the MLP with the given learning rate and epochs
+        mlp = MultilayerPerceptron([35] + [10] + [1])
+        mlp.train(X_train, y_train, epochs, learning_rate, convergence_threshold=0.0001)
+        
+        # Calculate the errors on the test set
+        errors = []
+        for i in range(len(X_test)):
+            prediction = mlp.predict(X_test[i])
+            error = np.abs(prediction - y_test[i])
+            errors.append(error)
+        
+        # Calculate the mean error and add it to the list
+        mean_error = np.mean(errors)
+        error_list.append(mean_error)
+    
+    # Add the list of errors for this learning rate to the main list
+    mean_errors.append(error_list)
+
+# Plot the lines for the different learning rates
+for i in range(len(learning_rates)):
+    plt.plot(epochs_array, mean_errors[i], label='lr={}'.format(learning_rates[i]))
+
+# Set the axis labels and legend
+plt.xlabel('Epochs')
+plt.ylabel('Mean Error')
+plt.legend()
+plt.savefig('plots/TP3-ej3b5.png')
