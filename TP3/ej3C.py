@@ -3,11 +3,11 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from config import load_config
 from multilayer_perceptron import MultilayerPerceptron
-from utils.parser import parse_txt_file_3b
+from utils.parser import parse_txt_file_3c
 # determinate the number from matrix using mlp
 
 
-input = parse_txt_file_3b('input_files/TP3-ej3-digitos.txt')
+input = parse_txt_file_3c('input_files/TP3-ej3-digitos.txt')
 
 ytrain = np.array([
 [1, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
@@ -40,20 +40,31 @@ mlp = MultilayerPerceptron([35] + hidden_layers + [10], momentum)
 
 input_train, input_test = train_test_split(input, test_size=0.2)
 
-X_train = input_train[0][:]
-y_train = input_train[1][:]
+X_train = input_train[:][0]
+y_train = input_train[:][1]
 
-X_test = input_test[0][:]
-X_test = input_test[0][:]
+X_test = input_test[0]
+y_test = input_test[1]
 
-train_set_size = len(input_train)
+# X_train = input_train[:,:-1]
+# y_train = input_train[:,-1]
+
+# X_test = input_test[:,:-1]
+# y_test = input_test[:,-1]
+
+print(X_test)
+print(y_test)
+
+set_size = len(input)
+train_set_size = len(X_train)
 
 # print(np.reshape(input, (10, 35)))
 # print()
 
-matrix = np.reshape(input_train, (train_set_size, train_set_size * 35))
+matrix_train = np.reshape(X_train, (train_set_size, train_set_size * 35))
+matrix_test = np.reshape(X_test, (set_size-train_set_size, (set_size-train_set_size) * 35))
 
-mlp.train(matrix, ytrain, epochs, learning_rate)
+mlp.train(matrix_train, y_train, epochs, learning_rate)
 
 # print the prediction for the four possible inputs
 print("Numbers prediction")

@@ -13,7 +13,7 @@ def parse_txt_file_3c(file: str):
     for i in np.arange(10):
         num_matrix = np.zeros(10)
         num_matrix[i] = 1
-        parsed_matrix.append((read_matrix[0], num_matrix))
+        parsed_matrix.append([read_matrix[0], num_matrix])
     return parsed_matrix
 
 def parse_txt_file_3b(file: str):
