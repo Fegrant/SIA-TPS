@@ -51,11 +51,11 @@ class MultilayerPerceptron:
                 # Backpropagate the error and update the weights
                 self.backpropagation(X[i], y[i], learning_rate)
                 if np.array_equal(X[i], np.array([1, 0])):
-                    print('Activations: ' + str(self.activations))
-                    print('Weights: ' + str(self.weights_per_layer))
+                    # print('Activations: ' + str(self.activations))
+                    # print('Weights: ' + str(self.weights_per_layer))
                     print()
 
-            # Compute the MSE after each epoch and append it to the list (for plotting purposes, each epoch is a point in the plot)
+                    # Compute the MSE after each epoch and append it to the list (for plotting purposes, each epoch is a point in the plot)
             sum_errors = np.append(sum_errors, self.mse(y, self.predict(X)))
 
     # feedforward the input through the network and return the output layer
@@ -117,7 +117,7 @@ class MultilayerPerceptron:
         # Compute the gradient at the output layer
         last_layer_delta = output_error * \
             self.sigmoid_activation_derivative(self.activations[-1])
-        print(self.sigmoid_activation_derivative(self.activations[-1]))
+        # print(self.sigmoid_activation_derivative(self.activations[-1]))
         layer_deltas.append(last_layer_delta)
 
         # Compute the gradient at the hidden layers
@@ -134,7 +134,7 @@ class MultilayerPerceptron:
             layer_deltas.append(layer_delta)
             last_layer_delta = copy.deepcopy(layer_delta)
 
-        print(layer_deltas)
+        # print(layer_deltas)
 
         # Update the weights of the output layer
         # print(np.dot(last_layer_delta, self.activations[-2]))
