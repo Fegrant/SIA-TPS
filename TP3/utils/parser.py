@@ -24,5 +24,6 @@ def parse_txt_file_3b(file: str):
     read_matrix = np.split(read_matrix, 10)
     parsed_matrix = []
     for i in np.arange(10):
-        parsed_matrix.append((read_matrix[0], i % 2))
+        even = i % 2
+        parsed_matrix.append(np.array([np.append(read_matrix[i].flatten(), even)]))
     return parsed_matrix
