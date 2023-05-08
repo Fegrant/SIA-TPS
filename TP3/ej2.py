@@ -11,6 +11,7 @@ from sklearn.model_selection import train_test_split
 # Load config
 perceptron_config = load_config()
 test_size = float(ex2_test_size())
+print(test_size)
 
 # Pull out lineal perceptron config
 lineal_perceptron_config = perceptron_config["lineal"]
@@ -44,13 +45,13 @@ print("Lineal MSE after training: ", mse)
 
 #PLOT ERROR
 
-# x = list(range(len(errors)))
-# plt.xlabel("Epochs", fontsize=12)
-# plt.ylabel("MSE", fontsize=12)
-# plt.title("MSE - Lineal")
-# plt.plot(x, errors, label='Error')
-# plt.legend()
-# plt.show()
+x = list(range(len(errors)))
+plt.xlabel("Epochs", fontsize=12)
+plt.ylabel("MSE", fontsize=12)
+plt.title("MSE - Lineal")
+plt.plot(x, errors, label='Error')
+plt.legend()
+plt.show()
 
 
 # TODO: COMO LOS DATOS NO SON DE CLASIFICACION (NO SON 0 Y 1) NO SE PUEDE HACER UNA LINEA DE DECISION, POR LO QUE NO TIENE MUCHO SENTIDO ESTE GRAFICO DE HIPERPLANO
@@ -90,14 +91,14 @@ print("Non lineal MSE after training: ", mse)
 
 #PLOT ERROR
 
-# x = list(range(len(errors)))
-# plt.xlabel("Epochs", fontsize=12)
-# plt.ylabel("MSE", fontsize=12)
-# if activation_function == 1:
-#     plt.title("MSE - Tangente Hiperbolica")
-# elif activation_function == 2:
-#     plt.title("MSE - Logistica")
-# plt.plot(x, errors, label='Error')
-# plt.legend()
-# plt.show()
+x = list(range(len(errors)))
+plt.xlabel("Epochs", fontsize=12)
+plt.ylabel("MSE", fontsize=12)
+if activation_function == 1:
+    plt.title("MSE - Tangente Hiperbolica")
+elif activation_function == 2:
+    plt.title("MSE - Logistica")
+plt.plot(x, errors, label='Error')
+plt.legend()
+plt.show()
 

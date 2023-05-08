@@ -6,6 +6,7 @@ from config import load_config, ex2_test_size
 from normalize import feature_scaling
 
 import numpy as np
+import csv
 import matplotlib.pyplot as plt
 
 from sklearn.model_selection import train_test_split
@@ -51,13 +52,17 @@ for proportion in testSetProportions:
 
 for i in range(10):
         for testPercentage in testSetProportions:
-                input_train, input_test = train_test_split(input, test_size=testPercentage)
+                # input_train, input_test = train_test_split(input, test_size=testPercentage)
                 
-                X_train = input_train[:,:-1]
-                y_train = input_train[:,-1]
+                # X_train = input_train[:,:-1]
+                # y_train = input_train[:,-1]
  
-                X_test = input_test[:,:-1]
-                y_test = input_test[:,-1]
+                # X_test = input_test[:,:-1]
+                # y_test = input_test[:,-1]
+                X = input[:, 0:3]
+                y = input[:, 3]
+
+                X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=testPercentage)
 
                 inputCopy = copy.deepcopy(input)
 
@@ -98,35 +103,10 @@ for proportion in testSetProportions:
         averageListLinealTraining.append(mean(resultsMap[proportion]['lineal']['train']))
         semAverageListLinealTraining.append(stdev(resultsMap[proportion]['lineal']['train']))
 
-width = 0.3
-x = np.arange(len(testSetProportions))
-
-plt.xlabel("Test set %", fontsize=12)
-plt.ylabel("MSE", fontsize=12)
-plt.title("Error on both Sets (Tanh)")
-plt.errorbar(x, averageListTanhTest, yerr=semAverageListTanhTest, marker='o', label='Test')
-plt.errorbar(x, averageListTanhTraining, yerr=semAverageListTanhTest, marker='o', label ='Training')
-plt.legend()
-plt.xticks(x, ('10', '20', '30','40','50','60','70','80'))
-plt.show()
-
-plt.xlabel("Test set %", fontsize=12)
-plt.ylabel("MSE", fontsize=12)
-plt.title("Error on both Sets (Logistica)")
-plt.errorbar(x, averageListLogisticTest, yerr=semAverageListLogisticTest, marker='o', label='Test')
-plt.errorbar(x, averageListLogisticTraining, yerr=semAverageListLogisticTest, marker='o', label ='Training')
-plt.legend()
-plt.xticks(x, ('10', '20', '30','40','50','60','70','80'))
-plt.show()
-
-plt.xlabel("Test set %", fontsize=12)
-plt.ylabel("MSE", fontsize=12)
-plt.title("Error on both Sets (Lineal)")
-plt.errorbar(x, averageListLinealTest, yerr=semAverageListLinealTest, marker='o', label='Test')
-plt.errorbar(x, averageListLinealTraining, yerr=semAverageListLinealTest, marker='o', label ='Training')
-plt.legend()
-plt.xticks(x, ('10', '20', '30','40','50','60','70','80'))
-plt.show()
-
-
-        
+with open('ej2_sets_proportions.csv', 'w') as file:
+        writer = csv.writer(file)
+        writer.writerow(['method', 'test_proportion', 'test_error', 'test_error_std', 'train_error', 'train_error_std'])
+        for proportion in testSetProportions:
+                writer.writerow(['lineal', proportion, mean(resultsMap[proportion]['lineal']['test']), stdev(resultsMap[proportion]['lineal']['test']), mean(resultsMap[proportion]['lineal']['train']), stdev(resultsMap[proportion]['lineal']['train'])])
+                writer.writerow(['tanh', proportion, mean(resultsMap[proportion][ActivationFunc.TANH]['test']), stdev(resultsMap[proportion][ActivationFunc.TANH]['test']), mean(resultsMap[proportion][ActivationFunc.TANH]['train']), stdev(resultsMap[proportion][ActivationFunc.TANH]['train'])])
+                writer.writerow(['logistic', proportion, mean(resultsMap[proportion][ActivationFunc.LOGISTIC]['test']), stdev(resultsMap[proportion][ActivationFunc.LOGISTIC]['test']), mean(resultsMap[proportion][ActivationFunc.LOGISTIC]['train']), stdev(resultsMap[proportion][ActivationFunc.LOGISTIC]['train'])])
