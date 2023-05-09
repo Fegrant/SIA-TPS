@@ -70,6 +70,10 @@ class Perceptron:
     def error(self, X, y):
         prediction = self.activation(X)
         return 1 - np.mean(prediction == y)       # Checks if all values of prediction and y are equal
+    
+    def mse_error(self, X, y):
+        prediction = self.predict(X)
+        return 1 - np.mean(prediction == y)
 
 
 class SimpleLinealPerceptron(Perceptron):
@@ -104,6 +108,10 @@ class SimpleLinealPerceptron(Perceptron):
     # Calculates the mean square error of the perceptron on the given data. X and y must be the same length.
     def error(self, X, y):
         prediction = self.activation(X)
+        return np.mean((y - prediction)**2)
+
+    def mse_error(self, X, y):
+        prediction = self.predict(X)
         return np.mean((y - prediction)**2)
 
 
@@ -178,14 +186,16 @@ class SimpleNonLinealPerceptron(SimpleLinealPerceptron):
             
             prediction = self.activation(Xmodified)
 
-            actual_error = self.error(Xmodified, y)
+            actual_error = self.error(Xmodified)
             errors.append(actual_error)      
             if actual_error < self.accepted_error:
                 print("Convergence reached at epoch", epochs)
                 break               # Finish by convergence
             epochs += 1
 
-        error = self.error(Xmodified, y)
+        error = self.error(Xmodified)
+        # print(Xmodified)
+        # error = self.mse_error(Xmodified[:, 1:], y)
         errors.append(error)
         print("Epochs: ", epochs)
         return error, errors
@@ -194,10 +204,19 @@ class SimpleNonLinealPerceptron(SimpleLinealPerceptron):
         return self.learning_rate * (solution - predict) * self.derivative(np.dot(input, self.weights))
     
     # Calculates the mean square error of the perceptron on the given data. X and y must be the same length.
-    def error(self, X, y):
+    def error(self, X):
         prediction = self.activation(X)
         if self.activation_func == ActivationFunc.TANH:
             prediction = inverse_feature_scaling(prediction, -1, 1, self.ymin, self.ymax)
         elif self.activation_func == ActivationFunc.LOGISTIC:
             prediction = inverse_feature_scaling(prediction, 0, 1, self.ymin, self.ymax)
         return np.mean((self.yOriginal - prediction)**2)
+    
+    def mse_error(self, X, y):
+        prediction = self.predict(X)
+        if self.activation_func == ActivationFunc.TANH:
+            prediction = inverse_feature_scaling(prediction, -1, 1, self.ymin, self.ymax)
+        elif self.activation_func == ActivationFunc.LOGISTIC:
+            prediction = inverse_feature_scaling(prediction, 0, 1, self.ymin, self.ymax)
+        return np.mean((y - prediction)**2)
+    
