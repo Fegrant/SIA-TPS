@@ -43,21 +43,19 @@ def stratified_split(X, y, test_size=0.2):
         desired_test_size_diff = len(test_indexes) - int(data_len * test_size)
         if desired_test_size_diff > 0:                                  # test set has more values than needed
                 new_train_indexes = random.sample(test_indexes, int(desired_test_size_diff))
-                train_indexes += new_train_indexes
-                for test_index in test_indexes:
-                        if test_index in new_train_indexes:
-                                test_indexes.remove(test_index)
+                for new_train_index in new_train_indexes:
+                        train_indexes.append(new_train_index)
+                        test_indexes.remove(new_train_index)
         elif desired_test_size_diff < 0:                                # test set has less values than needed
                 new_test_indexes = random.sample(train_indexes, int(-desired_test_size_diff))
-                test_indexes += new_test_indexes
-                for train_index in train_indexes:
-                        if train_index in new_test_indexes:
-                                train_indexes.remove(train_index)
+                for new_test_index in new_test_indexes:
+                        test_indexes.append(new_test_index)
+                        train_indexes.remove(new_test_index)
+        
         
         return X[train_indexes], X[test_indexes], y[train_indexes], y[test_indexes]
-        # return train_indexes, test_indexes
 
-# testSetProportions = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+
 testSetProportions = [i/100 for i in range(5, 95, 5)]
 resultsMap = {}
 averageListTanhTest = []
@@ -100,11 +98,6 @@ for proportion in testSetProportions:
 
 for i in range(10):
         for testPercentage in testSetProportions:
-                # X_train = input_train[:,:-1]
-                # y_train = input_train[:,-1]
- 
-                # X_test = input_test[:,:-1]
-                # y_test = input_test[:,-1]
                 X = input[:, 0:3]
                 y = input[:, 3]
 
