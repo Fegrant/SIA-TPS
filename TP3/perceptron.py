@@ -1,4 +1,5 @@
 from enum import IntEnum
+from normalize import feature_scaling, inverse_feature_scaling
 import numpy as np
 
 class UpdateMode(IntEnum):
@@ -148,6 +149,14 @@ class SimpleNonLinealPerceptron(SimpleLinealPerceptron):
             raise ValueError("Activation function not supported")
         
     def train(self, X, y):
+        self.yOriginal = y.copy()
+        self.ymin = np.min(y)
+        self.ymax = np.max(y)
+        if self.activation_func == ActivationFunc.TANH:
+            y = feature_scaling(y, -1, 1)
+        elif self.activation_func == ActivationFunc.LOGISTIC:
+            y = feature_scaling(y, 0, 1)
+
         epochs = 0
         errors = []
 
@@ -183,3 +192,12 @@ class SimpleNonLinealPerceptron(SimpleLinealPerceptron):
         
     def delta_w(self, predict, input, solution):
         return self.learning_rate * (solution - predict) * self.derivative(np.dot(input, self.weights))
+    
+    # Calculates the mean square error of the perceptron on the given data. X and y must be the same length.
+    def error(self, X, y):
+        prediction = self.activation(X)
+        if self.activation_func == ActivationFunc.TANH:
+            prediction = inverse_feature_scaling(prediction, -1, 1, self.ymin, self.ymax)
+        elif self.activation_func == ActivationFunc.LOGISTIC:
+            prediction = inverse_feature_scaling(prediction, 0, 1, self.ymin, self.ymax)
+        return np.mean((self.yOriginal - prediction)**2)

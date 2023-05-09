@@ -1,7 +1,7 @@
 from utils.parser import parse_csv_file
 from perceptron import SimpleLinealPerceptron, SimpleNonLinealPerceptron, UpdateMode
 from config import load_config, ex2_test_size
-from normalize import feature_scaling
+from normalize import feature_scaling, inverse_feature_scaling
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -23,24 +23,31 @@ accepted_error = float(lineal_perceptron_config["accepted_error"])
 
 input = parse_csv_file('input_files/TP3-ej2-conjunto.csv')
 
-input_train, input_test = train_test_split(input, test_size=test_size)
+# Extract the input and output data
+x = input[:, 0:3]
+y = input[:, 3]
 
-X_train = input_train[:,:-1]
-y_train = input_train[:,-1]
+X = np.array(x)
+Y = np.array(y)
 
-X_test = input_test[:,:-1]
-y_test = input_test[:,-1]
+# input_train, input_test = train_test_split(input, test_size=test_size)
+
+# X_train = input_train[:,:-1]
+# y_train = input_train[:,-1]
+
+# X_test = input_test[:,:-1]
+# y_test = input_test[:,-1]
 
 # X_train, X_test = train_test_split(X, test_size=0.2)
 
 # Creation, training and values of lineal perceptron
 lineal_perceptron = SimpleLinealPerceptron(num_inputs, learning_rate, epochs, accepted_error, UpdateMode.BATCH)
 
-mse, errors = lineal_perceptron.train(X_train, y_train)
+mse, errors = lineal_perceptron.train(X, Y)
 
 print("Lineal Weights: ", lineal_perceptron.weights[1:])
 print("Lineal Bias: ", lineal_perceptron.weights[0])
-print("Lineal Predictions: ", lineal_perceptron.predict(X_test))
+print("Lineal Predictions: ", lineal_perceptron.predict(X))
 print("Lineal MSE after training: ", mse)
 
 #PLOT ERROR
@@ -50,6 +57,7 @@ plt.xlabel("Epochs", fontsize=12)
 plt.ylabel("MSE", fontsize=12)
 plt.title("MSE - Lineal")
 plt.plot(x, errors, label='Error')
+plt.ylim((0, None))
 plt.legend()
 plt.show()
 
@@ -71,22 +79,25 @@ activation_function = no_lineal_perceptron_config["activation_function"]
 non_lineal_perceptron = SimpleNonLinealPerceptron(num_inputs, learning_rate, epochs, accepted_error, UpdateMode.BATCH, beta, activation_function)
 
 
-# activation_function = 1 -> tanh
-if activation_function == 1:
-    ynorm = feature_scaling(y_train, -1, 1)
-    ynorm_test = feature_scaling(y_test, -1, 1)
-# activation_function = 2 -> logistic
-elif activation_function == 2:
-    ynorm = feature_scaling(y_train, 0, 1)
-    ynorm_test = feature_scaling(y_test, 0, 1)
+# # activation_function = 1 -> tanh
+# if activation_function == 1:
+#     ynorm = feature_scaling(Y, -1, 1)
+# # activation_function = 2 -> logistic
+# elif activation_function == 2:
+#     ynorm = feature_scaling(Y, 0, 1)
     
 
-mse, errors = non_lineal_perceptron.train(X_train, ynorm)
+mse, errors = non_lineal_perceptron.train(X, Y)
 
 print("Non lineal Weights: ", non_lineal_perceptron.weights[1:])
 print("Non lineal Bias: ", non_lineal_perceptron.weights[0])
-print("Non lineal Predictions: ", non_lineal_perceptron.predict(X_test))
-print("Non lineal normalized y: ", ynorm_test)
+
+prediction = non_lineal_perceptron.predict(X)
+prediction_denormalized = inverse_feature_scaling(prediction, 0, 1, np.min(Y), np.max(Y))
+
+
+print("Non lineal Predictions: ", prediction_denormalized)
+print("Non lineal Orinal Y: ", Y)
 print("Non lineal MSE after training: ", mse)
 
 #PLOT ERROR

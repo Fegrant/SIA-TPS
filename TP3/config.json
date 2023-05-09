@@ -9,16 +9,16 @@
         },
         "lineal": {
             "number_of_inputs": 3,
-            "epochs" : 10000,
-            "learning_rate" : 0.00001,
-            "accepted_error": 0.001
+            "epochs" : 1000,
+            "learning_rate" : 0.005,
+            "accepted_error": 0.01
         },
         "no-lineal": {
             "number_of_inputs": 3,
-            "epochs" : 10000,
-            "learning_rate" : 0.00001,
+            "epochs" : 1000,
+            "learning_rate" : 0.005,
             "beta": 1,
-            "accepted_error": 0.001,
+            "accepted_error": 0.01,
             "activation_function": 2
         },
         "multilayer": {
