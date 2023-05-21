@@ -1,6 +1,5 @@
 from kohonen import Kohonen, Neuron
 from sklearn.preprocessing import StandardScaler
-from adjustText import adjust_text
 from config import load_kohonen_config
 
 
@@ -15,8 +14,8 @@ from utils.parser import parse_csv_file
 df = parse_csv_file('./europe.csv')
 labels = df["Country"].to_numpy()
 df.drop(columns=["Country"], axis=1, inplace=True)
+cells = list(df.columns)
 inputs = StandardScaler().fit_transform(df.values)
-cells = ["Area","GDP","Inflation","Life.expect","Military","Pop.growth","Unemployment"]
 
 config = load_kohonen_config()
 
@@ -28,17 +27,30 @@ epochs = int(config['epochs'])
 # print(input)
 kohonen = Kohonen(grid_dimension, radius, learning_rate, epochs)
 kohonen.train(inputs)
+n = inputs.shape[0]
 
 def label_plot():
     Xs, Ys = [],[]
-    texts = []
     for i in range(len(inputs)):
         x, y = kohonen.find_best_neuron(inputs[i])
         Xs.append(x)
         Ys.append(y)
-        texts.append(plt.text(x, y, labels[i]))
-    plt.scatter(Xs, Ys)
-    adjust_text(texts, only_move={'points':'y', 'text':'y'}, arrowprops=dict(arrowstyle="->", color='r', lw=0.5))
+
+    scalex = 1.0 / (max(Xs) - min(Xs))
+    scaley = 1.0 / (max(Ys) - min(Ys))
+
+    scaled_Xs = [x * scalex for x in Xs]
+    scaled_Ys = [y * scaley for y in Ys]
+
+    plt.scatter(scaled_Xs, scaled_Ys)
+    for i in np.arange(len(labels)):
+        plt.annotate(labels[i], (scaled_Xs[i], scaled_Ys[i]), color = 'blue')
+
+    # Plot arrows (biplot)
+    for i in range(len(cells)):
+        plt.arrow(0, 0, inputs[i, 0], inputs[i, 1], color='r', alpha=0.5)
+        plt.text(inputs[i, 0] * 1.15, inputs[i, 1] * 1.15, cells[i], color='g', ha='center', va='center')
+
     plt.show()
 
 def count_plot():
@@ -52,16 +64,16 @@ def count_plot():
 
 def average_variable_plot():
     count_matrix = np.ones((grid_dimension, grid_dimension))
-    variables_matrix = np.zeros((len(inputs), grid_dimension, grid_dimension))
+    variables_matrix = np.zeros((len(cells), grid_dimension, grid_dimension))
 
     for input in inputs:
         x, y = kohonen.find_best_neuron(input)
         count_matrix[y][x] += 1
         for var in range(len(cells)):
-            variables_matrix [var][y][x] =+ kohonen.neurons[y][x].weights[var]
+            variables_matrix[var][y][x] += kohonen.neurons[y][x].weights[var]
         
     for var in range(len(cells)):
-        variables_matrix[var] = variables_matrix[var] / count_matrix
+        variables_matrix[var] /= count_matrix
     
     _, axes = plt.subplots(2, 4)
     for i in range(len(cells)):
