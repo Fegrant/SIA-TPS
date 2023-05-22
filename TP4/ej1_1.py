@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 from utils.parser import parse_csv_file
 
-df = parse_csv_file('./europe.csv')
+df = parse_csv_file('./inputs/europe.csv')
 labels = df["Country"].to_numpy()
 df.drop(columns=["Country"], axis=1, inplace=True)
 cells = list(df.columns)

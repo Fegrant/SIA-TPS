@@ -2,13 +2,12 @@ from math import hypot
 from typing import Tuple
 import numpy as np
 
-# print(parse_csv_file('./europe.csv'))
-
 class Neuron:
 
     def __init__(self, weights: np.ndarray) -> None:
         self.weights = weights
 
+    # Euclidean distance between the neuron's weights and the input
     def distance(self, x: np.ndarray):
         if len(self.weights) != len(x):
             raise Exception("Dimensions don't match")
