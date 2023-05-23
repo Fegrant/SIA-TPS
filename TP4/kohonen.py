@@ -1,6 +1,8 @@
 from math import hypot
 from typing import Tuple
+
 import numpy as np
+import random
 
 class Neuron:
 
@@ -23,38 +25,53 @@ class Kohonen:
         self.epochs = epochs
 
     def train(self, inputs: list[list[float]]) -> None:
-        for y in range(self.grid_dimension):
-            for x in range(self.grid_dimension):
-                rand_input = inputs[ y * x % len(inputs)]
-                self.neurons[y][x] = Neuron(weights=list(rand_input))
+        input_amount = len(inputs) - 1
+        for x in range(self.grid_dimension):
+            for y in range(self.grid_dimension):
+                value_index = random.randint(0, input_amount)
+                rand_input = inputs[value_index]
+                # rand_input = inputs[ y * x % len(inputs)]
+                self.neurons[x][y] = Neuron(weights=list(rand_input))
 
         total_iterations = self.epochs * len(inputs)
 
         iteration = 0
         r = self.radius
-        n = self.learning_rate
+        # n = self.learning_rate
+        n = 1
         while iteration < total_iterations:
+            
+            # TODO: Randomize input order, now its in order of the list
 
             i = iteration % len(inputs)
             rand_input = inputs[i]
 
             best_x, best_y = self.find_best_neuron(rand_input)
 
-            for x in range(best_x - r, best_x + r + 1, 1):
-                for y in range(best_y - r, best_y + r + 1, 1):
-                    if x >= 0 and x < self.grid_dimension and y >= 0 and y < self.grid_dimension and hypot(x - best_x, y - best_y) <= r:
+            # for x in range(best_x - r, best_x + r + 1, 1):
+            #     for y in range(best_y - r, best_y + r + 1, 1):
+            #         if x >= 0 and x < self.grid_dimension and y >= 0 and y < self.grid_dimension and hypot(x - best_x, y - best_y) <= r:
+            #             self.neurons[y][x].weights += n * (rand_input - self.neurons[y][x].weights)
+
+            # Iterate over all neurons and check if they are in the neighbourhood of the best neuron and update their weights
+            for x in range(self.grid_dimension):
+                for y in range(self.grid_dimension):
+                    if hypot(x - best_x, y - best_y) <= r:
                         self.neurons[y][x].weights += n * (rand_input - self.neurons[y][x].weights)
         
             iteration += 1
-            n = (0.7 - self.learning_rate)/total_iterations * iteration + self.learning_rate
-            r = int((1-self.radius)/total_iterations * iteration) + self.radius
+            if iteration % input_amount == 0:
+                # n = 1 / (iteration + 1)
+                n = self.learning_rate * ((total_iterations - iteration) / total_iterations)
+                r = (1-self.radius) * (iteration/total_iterations) + self.radius
+            # n = (0.7 - self.learning_rate)/total_iterations * iteration + self.learning_rate
 
     def find_best_neuron(self, input: list[float]) -> Tuple[int, int]:
         best_distance = np.inf
         best_coords = None
-        for y in range(self.grid_dimension):
-            for x in range(self.grid_dimension):
-                distance = self.neurons[y][x].distance(input)
+        for x in range(self.grid_dimension):
+            for y in range(self.grid_dimension):
+                distance = self.neurons[x][y].distance(input)
                 if distance < best_distance:
                     best_distance = distance
                     best_coords = [x,y]
