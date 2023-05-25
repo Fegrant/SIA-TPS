@@ -95,8 +95,10 @@ def count_plot():
                 txt.set_path_effects([PathEffects.withStroke(linewidth=1, foreground='#000')])
             # plt.text(x - 0.2, y, texts[y][x])
 
-    plt.imshow(heatmap)
+    plt.imshow(heatmap, cmap='inferno')
     plt.colorbar()
+    plt.xticks(np.arange(grid_dimension))
+    plt.yticks(np.arange(grid_dimension))
     plt.show()
 
 def average_variable_plot():
@@ -114,8 +116,10 @@ def average_variable_plot():
     
     fig, axes = plt.subplots(2, 4, figsize=(12, 12))
     for i in range(len(cells)):
-        axes[i//4][i%4].imshow(variables_matrix[i])
+        axes[i//4][i%4].imshow(variables_matrix[i], cmap='inferno')
         axes[i//4][i%4].set_title(cells[i])
+        axes[i//4][i%4].set_xticks(np.arange(grid_dimension))
+        axes[i//4][i%4].set_yticks(np.arange(grid_dimension))
     
     fig.delaxes(axes[1][3])
     plt.show()
