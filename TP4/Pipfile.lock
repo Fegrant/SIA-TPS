@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "43a0dcccd6d02c3cb09b52a7a7b4f2cb02ae9fcf704e899d904e7713cd436018"
+            "sha256": "8f248faa1333ff78b4e8ac6c63312d99d915ff58d3fd87056b308bbd830a0d1c"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,6 +16,14 @@
         ]
     },
     "default": {
+        "adjusttext": {
+            "hashes": [
+                "sha256:6da99f9d739c496f79346753a3fcadb6354d8d09699cde112fed46cfb837d271",
+                "sha256:bb0682bb53abb626d6afc9c1db108ccb67f2c35ddc8d20ac6a802c756c07ee17"
+            ],
+            "index": "pypi",
+            "version": "==0.8"
+        },
         "anyio": {
             "hashes": [
                 "sha256:25ea0d673ae30af41a0c442f81cf3b38c7e79fdc7b60335a4c14e05eb0947421",
@@ -1294,6 +1302,13 @@
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==1.16.0"
+        },
+        "sklearn": {
+            "hashes": [
+                "sha256:7377c714a03a79bbe9196f435db931fd2a6fa8c68514da7ed3a251fd08c52e2c"
+            ],
+            "index": "pypi",
+            "version": "==0.0.post5"
         },
         "sniffio": {
             "hashes": [

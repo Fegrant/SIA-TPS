@@ -1,10 +1,14 @@
 import numpy as np
 
 class Hopfield:
-    def __init__(self, patterns):
-        self.patterns = np.array(patterns) # [[1 -1  1  1 ... 1 (25)], ... 4 patterns]
+    def __init__(self, patterns : list[np.ndarray]):
+        self.patterns = patterns # [[1 -1  1  1 ... 1 (25)], ... 4 patterns]
         self.dimension = len(patterns[0]) # 25
-        self.weights = np.dot(self.patterns.T, self.patterns) # 25x25
+        self.weights = np.zeros((self.dimension, self.dimension)) # 25x25
+        for pattern in self.patterns:
+            self.weights += np.dot(pattern.T, pattern) # 25x25
+            
+        # self.weights = np.dot(self.patterns.T, self.patterns) # 25x25
         np.fill_diagonal(self.weights, 0) # the diagonal is 0 (no self-connection)
     
     def train(self, untrained_pattern, epochs=1):
