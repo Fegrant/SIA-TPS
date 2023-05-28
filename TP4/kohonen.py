@@ -57,7 +57,7 @@ class Kohonen:
             for x in range(self.grid_dimension):
                 for y in range(self.grid_dimension):
                     if hypot(x - best_x, y - best_y) <= r:
-                        self.neurons[y][x].weights += n * (rand_input - self.neurons[y][x].weights)
+                        self.neurons[x][y].weights += n * (rand_input - self.neurons[x][y].weights)
         
             iteration += 1
             if iteration % input_amount == 0:
