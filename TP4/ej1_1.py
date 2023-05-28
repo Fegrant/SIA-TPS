@@ -26,55 +26,6 @@ epochs = int(config['epochs'])
 # print(input)
 kohonen = Kohonen(grid_dimension, radius, learning_rate, epochs)
 kohonen.train(inputs)
-n = inputs.shape[0]
-
-def biplot(score, coeff, names, labels=None):
-    xs = score[:,0] # projection on PC1
-    ys = score[:,1] # projection on PC2
-    n = coeff.shape[0] # number of variables
-    scalex = 1.0 / (xs.max() - xs.min())
-    scaley = 1.0 / (ys.max() - ys.min())
-    fig, ax = plt.subplots(figsize=(10, 10))
-
-    # plot countries
-    ax.scatter(xs * scalex, ys * scaley, color='b', alpha=0.5)
-    for i in np.arange(len(names)):
-        ax.annotate(names[i], (xs[i] * scalex + 0.015, ys[i] * scaley), color='blue') # country names
-    
-    # plot variables
-    for i in range(n):
-        ax.arrow(0, 0, coeff[i,0], coeff[i,1], color='r', alpha=0.5) # variables
-        ax.text(coeff[i,0] * 1.05, coeff[i,1] * 1.05, labels[i], color='g', ha='center', va='center')
-    
-    ax.set_xlabel("PC{}".format(1))
-    ax.set_ylabel("PC{}".format(2))
-
-    ax.set_xlim(-0.6, 0.6)
-    ax.set_ylim(-0.6, 0.6)
-
-# def label_plot():
-    # Xs, Ys = [],[]
-    # for i in range(len(inputs)):
-    #     x, y = kohonen.find_best_neuron(inputs[i])
-    #     Xs.append(x)
-    #     Ys.append(y)
-
-    # scalex = 1.0 / (max(Xs) - min(Xs))
-    # scaley = 1.0 / (max(Ys) - min(Ys))
-
-    # scaled_Xs = [x * scalex for x in Xs]
-    # scaled_Ys = [y * scaley for y in Ys]
-
-    # plt.scatter(scaled_Xs, scaled_Ys)
-    # for i in np.arange(len(labels)):
-    #     plt.annotate(labels[i], (scaled_Xs[i], scaled_Ys[i]), color = 'blue')
-
-    # # Plot arrows (biplot)
-    # for i in range(len(cells)):
-    #     plt.arrow(0, 0, inputs[i, 0], inputs[i, 1], color='r', alpha=0.5)
-    #     plt.text(inputs[i, 0] * 1.15, inputs[i, 1] * 1.15, cells[i], color='g', ha='center', va='center')
-
-    # plt.show()
 
 def count_plot():
     fig, ax = plt.subplots(figsize=(10, 10))
@@ -101,6 +52,7 @@ def count_plot():
     plt.yticks(np.arange(grid_dimension))
     plt.show()
 
+# plot the average value of each variable for each neuron
 def average_variable_plot():
     count_matrix = np.ones((grid_dimension, grid_dimension))
     variables_matrix = np.zeros((len(cells), grid_dimension, grid_dimension))
@@ -124,6 +76,7 @@ def average_variable_plot():
     fig.delaxes(axes[1][3])
     plt.show()
 
+# plot the average distance to neighbours for each neuron in the grid
 def matrix_plot():
     fig, ax = plt.subplots(figsize=(10, 10))
     heatmap = np.zeros((grid_dimension, grid_dimension))
@@ -142,10 +95,10 @@ def matrix_plot():
     print(f"Average: {sum(heatmap[y][x] for y in range(grid_dimension) for x in range(grid_dimension)) / grid_dimension**2}")
 
     plt.imshow(heatmap, cmap= cm.gray)
+    plt.title("Average distance to neighbours")
     plt.colorbar()
     plt.show()
 
-# label_plot()
 count_plot()
 matrix_plot()
 average_variable_plot()

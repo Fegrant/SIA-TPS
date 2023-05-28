@@ -56,7 +56,7 @@ class Kohonen:
             # Iterate over all neurons and check if they are in the neighbourhood of the best neuron and update their weights
             for x in range(self.grid_dimension):
                 for y in range(self.grid_dimension):
-                    if hypot(x - best_x, y - best_y) <= r:
+                    if hypot(abs(x - best_x), abs(y - best_y)) <= r:
                         self.neurons[x][y].weights += n * (rand_input - self.neurons[x][y].weights)
         
             iteration += 1
