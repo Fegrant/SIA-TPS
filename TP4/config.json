@@ -3,7 +3,8 @@
     "grid_dimension": 4,
     "radius": 1.8,
     "learning_rate": 0.9,
-    "epochs": 500
+    "epochs": 500,
+    "random_weights": false
   },
   "oja": {
     "learning_rate": 0.0001,

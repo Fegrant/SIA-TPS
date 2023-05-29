@@ -17,21 +17,26 @@ class Neuron:
     
 class Kohonen:
 
-    def __init__(self, grid_dimension, radius, learning_rate, epochs):
+    def __init__(self, grid_dimension, radius, learning_rate, epochs, random_weights):
         self.neurons = [[None for _ in range(grid_dimension)] for _ in range(grid_dimension)]
         self.grid_dimension = grid_dimension
         self.radius = radius
         self.learning_rate = learning_rate
         self.epochs = epochs
+        self.random_weights = random_weights
 
     def train(self, inputs: list[list[float]]) -> None:
         input_amount = len(inputs) - 1
         for x in range(self.grid_dimension):
             for y in range(self.grid_dimension):
-                value_index = random.randint(0, input_amount)
-                rand_input = inputs[value_index]
-                # rand_input = inputs[ y * x % len(inputs)]
-                self.neurons[x][y] = Neuron(weights=list(rand_input))
+                # if flag is set, randomize weights between -1 and 1
+                if self.random_weights:
+                    self.neurons[x][y] = Neuron(weights=np.random.rand(len(inputs[0])) * 2 - 1)
+                # else, randomize weights from the input list of values (this will decrese the amount of dead neurons)    
+                else:
+                    value_index = random.randint(0, input_amount)
+                    rand_input = inputs[value_index]
+                    self.neurons[x][y] = Neuron(weights=list(rand_input))
 
         total_iterations = self.epochs * len(inputs)
 

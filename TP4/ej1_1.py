@@ -22,9 +22,11 @@ grid_dimension = int(config['grid_dimension'])
 radius = int(config['radius'])
 learning_rate = float(config['learning_rate'])
 epochs = int(config['epochs'])
+random_weights = config['random_weights']
+
 
 # print(input)
-kohonen = Kohonen(grid_dimension, radius, learning_rate, epochs)
+kohonen = Kohonen(grid_dimension, radius, learning_rate, epochs, random_weights)
 kohonen.train(inputs)
 
 def count_plot():
@@ -92,7 +94,6 @@ def matrix_plot():
                         valid_neighbours += 1
 
             heatmap[y][x] = average_neighbour_dist / valid_neighbours
-    print(f"Average: {sum(heatmap[y][x] for y in range(grid_dimension) for x in range(grid_dimension)) / grid_dimension**2}")
 
     plt.imshow(heatmap, cmap= cm.gray)
     plt.title("Average distance to neighbours")
