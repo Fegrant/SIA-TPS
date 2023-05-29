@@ -245,5 +245,5 @@ def stored_patterns_amount():
 
     plt.show()
 
-# noise_plot()
+noise_plot()
 stored_patterns_amount()
