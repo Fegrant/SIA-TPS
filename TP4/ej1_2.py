@@ -21,10 +21,11 @@ learning_rate = float(config['learning_rate'])
 oja = OjaPerceptron(inputs, learning_rate)
 pca1 = oja.train(epochs)
 
-print(f"Oja eigenvector that builds PC1:\n {pca1}")
-countries_pca1 = [np.inner(pca1,inputs[i]) for i in range(len(inputs))]
+print(f"Oja eigenvector that builds PC1:\n {-np.round(pca1, 6)}")
+countries_pca1 = [-np.inner(pca1,inputs[i]) for i in range(len(inputs))]
 libray_pca1 = [0.12487390183337656,-0.5005058583604993,0.4065181548118897,-0.4828733253002008,0.18811161613179747,-0.475703553912758,0.27165582007504635]
-countries_library_pca1 = [-np.inner(libray_pca1,inputs[i]) for i in range(len(inputs))]
+print(f"Sklearn eigenvector that builds PC1:\n {np.round(libray_pca1, 6)}")
+countries_library_pca1 = [np.inner(libray_pca1,inputs[i]) for i in range(len(inputs))]
 fig,(ax1,ax2) = plt.subplots(1,2, figsize=(12, 10))
 bar1 = ax1.bar(countries,countries_pca1)
 bar2 = ax2.bar(countries,countries_library_pca1)
