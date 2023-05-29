@@ -136,6 +136,9 @@ dmypy.json
 *.txt
 *.csv
 
+# image outputs
+*.png
+
 # input files
 !/tp3/input_files/*.txt
 !/tp3/input_files/*.csv

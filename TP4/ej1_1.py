@@ -3,7 +3,7 @@ from sklearn.preprocessing import StandardScaler
 from config import load_kohonen_config
 
 import numpy as np
-
+import os
 from matplotlib import cm
 import matplotlib.pyplot as plt
 import matplotlib.patheffects as PathEffects
@@ -25,9 +25,8 @@ epochs = int(config['epochs'])
 random_weights = config['random_weights']
 
 
-# print(input)
-kohonen = Kohonen(grid_dimension, radius, learning_rate, epochs, random_weights)
-kohonen.train(inputs)
+
+
 
 def count_plot():
     fig, ax = plt.subplots(figsize=(10, 10))
@@ -53,6 +52,26 @@ def count_plot():
     plt.xticks(np.arange(grid_dimension))
     plt.yticks(np.arange(grid_dimension))
     plt.show()
+
+# plot the amount of inputs that each neuron has won in a kxk heatmap
+def count_plot_k(k):
+    fig, ax = plt.subplots(figsize=(10, 10))
+    heatmap = np.zeros((k, k))
+
+    for i in np.arange(len(inputs)):
+        x, y = kohonen.find_best_neuron(inputs[i])
+        heatmap[y][x] += 1
+
+    plt.imshow(heatmap, cmap='inferno')
+    plt.title("Amount of inputs that each neuron has won")
+    plt.colorbar()
+    plt.xticks(np.arange(k))
+    plt.yticks(np.arange(k))
+    output_dir = './outputs'
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    plt.savefig(f'./outputs/europe_{k}.png')
+    
 
 # plot the average value of each variable for each neuron
 def average_variable_plot():
@@ -99,6 +118,16 @@ def matrix_plot():
     plt.title("Average distance to neighbours")
     plt.colorbar()
     plt.show()
+
+
+
+for i in range(2, 9, 2):
+    kohonen = Kohonen(i, radius, learning_rate, epochs, random_weights)
+    kohonen.train(inputs)
+    count_plot_k(i)
+
+kohonen = Kohonen(grid_dimension, radius, learning_rate, epochs, random_weights)
+kohonen.train(inputs)
 
 count_plot()
 matrix_plot()
