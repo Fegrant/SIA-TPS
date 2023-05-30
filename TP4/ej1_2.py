@@ -62,7 +62,6 @@ for lr in learning_rates:
 
 
 
-
 # plot errors of oja and library
 fig,ax = plt.subplots(1,1, figsize=(12, 10))
 x_pos = np.arange(len(learning_rates))
