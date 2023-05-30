@@ -97,13 +97,14 @@ matrix_dict = parse_combined_matrix(input_file)
 #load the hopfield config
 config = load_hopfield_config()
 
-print_n_othogonals(matrix_dict.values(), 3)
+# print_n_othogonals(matrix_dict.values(), 3)
 
 # test the hopfield algorithm
 hopfield = Hopfield([np.array(matrix_dict['G']).flatten(), np.array(matrix_dict['R']).flatten(), np.array(matrix_dict['T']).flatten(), np.array(matrix_dict['V']).flatten()])
 
-noise_matrix = np.array(copy.deepcopy(matrix_dict['G']))
-noise_matrix = add_noise(noise_matrix, 0.3)
+noise_matrix = np.array(copy.deepcopy(matrix_dict['V']))
+noise_matrix = add_noise(noise_matrix, 0.5)
+# noise_matrix = np.array([[1, 1, 1, 1, 1], [-1, -1, -1, -1, -1], [1, -1, 1, 1, -1], [1, -1, -1, 1, 1], [-1, 1, -1, 1, -1]])
 
 matrix_test = np.array(noise_matrix).flatten()
 
@@ -245,5 +246,5 @@ def stored_patterns_amount():
 
     plt.show()
 
-noise_plot()
-stored_patterns_amount()
+# noise_plot()
+# stored_patterns_amount()

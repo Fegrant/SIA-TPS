@@ -24,9 +24,7 @@ learning_rate = float(config['learning_rate'])
 epochs = int(config['epochs'])
 random_weights = config['random_weights']
 
-
-
-
+kohonen = None
 
 def count_plot():
     fig, ax = plt.subplots(figsize=(10, 10))
@@ -48,6 +46,7 @@ def count_plot():
             # plt.text(x - 0.2, y, texts[y][x])
 
     plt.imshow(heatmap, cmap='inferno')
+    plt.rc('font', size=10)
     plt.colorbar()
     plt.xticks(np.arange(grid_dimension))
     plt.yticks(np.arange(grid_dimension))
@@ -67,6 +66,7 @@ def count_plot_k(k):
     plt.colorbar()
     plt.xticks(np.arange(k))
     plt.yticks(np.arange(k))
+    plt.rc('font', size=14)
     output_dir = './outputs'
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -75,7 +75,7 @@ def count_plot_k(k):
 
 # plot the average value of each variable for each neuron
 def average_variable_plot():
-    count_matrix = np.ones((grid_dimension, grid_dimension))
+    count_matrix = np.zeros((grid_dimension, grid_dimension))
     variables_matrix = np.zeros((len(cells), grid_dimension, grid_dimension))
 
     for input in inputs:
@@ -118,7 +118,6 @@ def matrix_plot():
     plt.title("Average distance to neighbours")
     plt.colorbar()
     plt.show()
-
 
 
 for i in range(2, 9, 2):
