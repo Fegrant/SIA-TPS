@@ -17,3 +17,10 @@ def to_bin_array(encoded_caracter):
             current_row >>= 1
     return bin_array
 
+def load_data_as_bin_array(path):
+    letters, labels = load_data(path)
+    bin_letters = []
+    for letter in letters:
+        bin_letters.append(to_bin_array(letter))
+    return bin_letters, labels
+
