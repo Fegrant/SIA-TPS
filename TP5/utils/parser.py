@@ -4,7 +4,9 @@ import json
 def load_data(path):
     with open(path, 'r') as f:
         data = json.load(f)
-    return data['font']
+    labels=['`', 'a', 'b', 'c' ,'d', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+            'n' ,'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y' ,'z', '{', '}', '|', '~']
+    return data['font'], labels
 
 def to_bin_array(encoded_caracter):
     bin_array = np.zeros((7, 5), dtype=int)

@@ -5,7 +5,7 @@ from config import load_config_multilayer
 import numpy as np
 import matplotlib.pyplot as plt
 
-letters = load_data('inputs/font.json')
+letters, labels = load_data('inputs/font.json')
 monocromatic_cmap = plt.get_cmap('binary')
 plt.imshow(to_bin_array(letters[0]), cmap=monocromatic_cmap)
 plt.show()
