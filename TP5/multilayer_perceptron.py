@@ -11,8 +11,6 @@ class MultilayerPerceptron:
         self.weights = [np.random.randn(self.layer_sizes[i], self.layer_sizes[i+1]) for i in range(self.num_layers - 1)]
         self.biases = [np.zeros((1, self.layer_sizes[i+1])) for i in range(self.num_layers - 1)]
         if self.momentum is not None:
-            # self.prev_weights = np.zeros()
-            # self.prev_biases = np.zeros()
             self.prev_weights = [np.zeros((self.layer_sizes[i], self.layer_sizes[i+1])) for i in range(self.num_layers - 1)]
             self.prev_biases = [np.zeros((1, self.layer_sizes[i+1])) for i in range(self.num_layers - 1)]
         
@@ -66,3 +64,6 @@ class MultilayerPerceptron:
 
     def mse(self, y_true, y_pred):
         return np.mean(np.square(y_true - y_pred))
+    
+    def errors(self):
+        return self.errors

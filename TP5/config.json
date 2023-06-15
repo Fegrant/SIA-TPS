@@ -1,12 +1,12 @@
 {
     "multilayer": {
-        "number_of_inputs": 2,
-        "hidden_layers": [25],
-        "number_of_outputs": 1,
-        "epochs" : 10000,
-        "learning_rate" : 0.01,
-        "beta": 0.1,
+        "number_of_inputs": 35,
+        "hidden_layers": [15,2,15],
+        "number_of_outputs": 35,
+        "epochs" : 40000,
+        "learning_rate" : 0.005,
+        "beta": 0.001,
         "convergence_threshold": 0.05,
-        "momentum": 0.9
+        "momentum": 0.8
     }
 }
