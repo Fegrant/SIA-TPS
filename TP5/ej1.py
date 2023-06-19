@@ -1,12 +1,13 @@
 from autoencoder import MultilayerPerceptron
 
 from utils.parser import *
+from utils.print_letter import *
 from utils.plots import biplot
 from config import load_config_multilayer
 import numpy as np
 import matplotlib.pyplot as plt
 
-def is_same_letter(originals: list[float], predictions: list[float], max_errors=1):
+def is_same_letter(originals: list[float], predictions: list[float], max_errors=0):
     wrong_letters = []
     wrong_predictions = []
     for i in range(len(originals)):
@@ -29,7 +30,7 @@ hidden_layers = [28, 22, 17, 10]
 autoencoder = MultilayerPerceptron([35] + hidden_layers + [2] + hidden_layers[::-1] + [35], momentum=None)
 letters, labels = load_data_as_bin_array('inputs/font.json')
 # print(letters)
-autoencoder.train(letters, letters, 10000, 0.00005)
+autoencoder.train(letters, letters, 20000, 0.00005)
 latent_predictions = autoencoder.latent_feedforward(letters)
 
 # print("a: ", letters[1].reshape(7, 5))
@@ -37,13 +38,17 @@ latent_predictions = autoencoder.latent_feedforward(letters)
 # print('MSE: {}'.format(autoencoder.mse(autoencoder.predict(letters[1]), letters[1])))
 # print(autoencoder.predict(letters[1]))
 
-wrong_letters, predictions = is_same_letter(letters, np.around(autoencoder.predict(letters), 0))
+predictions = np.around(autoencoder.predict(letters), 0)
+
+wrong_letters, wrong_predictions = is_same_letter(letters, predictions)
 
 for i in range(len(wrong_letters)):
     print("Wrong letter: {}".format(labels[wrong_letters[i]]))
-    print(letters[wrong_letters[i]].reshape(7,5).astype(int))
-    print(predictions[i].reshape(7,5).astype(int))
-    print()
+    # print(letters[wrong_letters[i]].reshape(7,5).astype(int))
+    # print(wrong_predictions[i].reshape(7,5).astype(int))
+    # print()
+
+print_letters(letters, predictions)
 
 # call the function. Use only the 2 PCs.
 biplot(latent_predictions, labels)

@@ -2,6 +2,7 @@ from autoencoder import MultilayerPerceptron
 
 from utils.noise import add_noise
 from utils.parser import *
+from utils.print_letter import *
 from config import load_config_multilayer
 import numpy as np
 import matplotlib.pyplot as plt
@@ -43,13 +44,15 @@ autoencoder.train(np.array(noise_letters), letters, 60000, 0.0005)
 
 test_noise = add_noise(copy.deepcopy(letters), 0.1)
 
-wrong_letters, predictions = is_same_letter(letters, np.around(autoencoder.predict(test_noise), 0))
+predictions = np.around(autoencoder.predict(test_noise), 0)
 
+wrong_letters, wrong_predictions = is_same_letter(letters, predictions)
 
 print("Wrong letters amount: {}".format(len(wrong_letters)))
 for i in range(len(wrong_letters)):
     print("Wrong letter: {}".format(labels[wrong_letters[i]]))
-    print(letters[wrong_letters[i]].reshape(7,5).astype(int))
-    print(predictions[i].reshape(7,5).astype(int))
     print()
+
+print_noise_letters(letters, noise_letters, predictions)
+
 
