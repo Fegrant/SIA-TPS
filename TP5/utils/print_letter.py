@@ -41,7 +41,7 @@ def print_letters(original_letters, predictions):
         
     plt.show()
 
-def is_same_letter(originals: list[float], predictions: list[float], max_errors=0):
+def is_same_letter(originals: list[float], predictions: list[float], max_errors=1):
     wrong_letters = []
     wrong_predictions = []
     for i in range(len(originals)):

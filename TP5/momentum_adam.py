@@ -29,16 +29,20 @@ for i in range(10):
     wrong_letters, wrong_predictions = is_same_letter(letters, predictions)
     writer.writerow(['momentum', len(wrong_letters), elapsed])
     print("FINISH MOMENTUM " + str(i))
+    print("WRONG LETTERS: " + str(len(wrong_letters)))
+    print()
 
     # adam
     autoencoder = MultilayerPerceptron([35] + adam_hidden_layers + [2] + adam_hidden_layers[::-1] + [35])
     start = time.process_time()
-    autoencoder.train(letters, letters, 100000, 0.00005)
+    autoencoder.train(letters, letters, 60000, 0.0005)
     elapsed = time.process_time() - start
 
     predictions = np.around(autoencoder.predict(letters), 0)
     wrong_letters, wrong_predictions = is_same_letter(letters, predictions)
     writer.writerow(['adam', len(wrong_letters), elapsed])
     print("FINISH ADAM " + str(i))
+    print("WRONG LETTERS: " + str(len(wrong_letters)))
+    print()
 
 f.close()
