@@ -1,8 +1,10 @@
 import numpy as np
 
-def add_noise(matrix, noise):
-    for i in range(len(matrix)):
-        for j in range(len(matrix[i])):
+# add noise to a flatten matrix
+def add_noise(letters, noise):
+    for i in range(len(letters)):
+        for j in range(len(letters[i])):
             if np.random.rand() < noise:
-                matrix[i][j] = 1 if matrix[i][j] == 0 else 0
-    return matrix
+                letters[i][j] = 1 if letters[i][j] == 0 else 0
+        
+    return letters
