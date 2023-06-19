@@ -74,14 +74,16 @@ class MultilayerPerceptron:
                 self.weights[i] += learning_rate * grad_weights
                 self.biases[i] += learning_rate * grad_biases
         
-    def train(self, X, y, epochs, learning_rate, convergence_threshold=0.01):
+    def train(self, X, y, epochs, learning_rate=0.00005, convergence_threshold=0.01, adaptative_eta=False):
         max_learning_rate = 0.003
         min_learning_rate = 0.00075
         for i in range(epochs):
             self.epoch = i+1
-            epoch_learning_rate = min_learning_rate + (max_learning_rate - min_learning_rate) * ((epochs - i) / epochs)
-            if epoch_learning_rate < min_learning_rate:
-                epoch_learning_rate = min_learning_rate
+            epoch_learning_rate = learning_rate
+            if adaptative_eta:
+                epoch_learning_rate = min_learning_rate + (max_learning_rate - min_learning_rate) * ((epochs - i) / epochs)
+                if epoch_learning_rate < min_learning_rate:
+                    epoch_learning_rate = min_learning_rate
             self.feedforward(X)
             self.backpropagation(y, epoch_learning_rate)
 
