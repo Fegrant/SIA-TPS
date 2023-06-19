@@ -25,9 +25,9 @@ def is_same_letter(originals: list[float], predictions: list[float], max_errors=
     return wrong_letters, wrong_predictions
 
 
-hidden_layers = [26, 17, 9]
+hidden_layers = []
 
-autoencoder = MultilayerPerceptron([35] + hidden_layers + [2] + hidden_layers[::-1] + [35], momentum=None)
+autoencoder = MultilayerPerceptron([35] + hidden_layers + [20] + hidden_layers[::-1] + [35], momentum=None)
 letters, labels = load_data_as_bin_array('inputs/font.json')
 
 # original_letters = copy.deepcopy(letters)
