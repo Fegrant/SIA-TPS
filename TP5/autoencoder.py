@@ -99,10 +99,19 @@ class MultilayerPerceptron:
     def errors(self):
         return self.errors
 
-    def latent_feedforward(self, X):
+    def feedforward_to_latent(self, X):
         self.activations = [X]
         self.outputs = []
         for i in range(self.num_layers - 1):
             self.outputs.append(np.dot(self.activations[i], self.weights[i]) + self.biases[i])
             self.activations.append(self.sigmoid(self.outputs[i]))
         return self.activations[int(self.num_layers/2)]
+
+    def latent_predict(self, X):
+        self.activations = [X]
+        self.outputs = []
+        start_layer = int(self.num_layers/2)
+        for i in range(start_layer, self.num_layers - 1):
+            self.outputs.append(np.dot(self.activations[i - start_layer], self.weights[i]) + self.biases[i])
+            self.activations.append(self.sigmoid(self.outputs[i - start_layer]))
+        return self.activations[-1]

@@ -2,10 +2,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def print_letter(letter):
+def print_letter(letter, index):
     monocromatic_cmap = plt.get_cmap('binary')
-    plt.imshow(letter, cmap=monocromatic_cmap)
-    plt.show()
+    plt.imshow(letter)
+    plt.savefig("letter_{}.png".format(index))
 
 def print_noise_letters(original_letters, noise_letters, predictions):
     fig, axes = plt.subplots(3, original_letters.shape[0], figsize=(7,5))

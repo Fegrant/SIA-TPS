@@ -2,7 +2,7 @@ from autoencoder import MultilayerPerceptron
 
 from utils.parser import *
 from utils.print_letter import *
-from utils.plots import biplot
+from utils.plots import biplot, biplot_with_new_letter
 from config import load_config_multilayer
 import numpy as np
 import matplotlib.pyplot as plt
@@ -31,28 +31,56 @@ autoencoder = MultilayerPerceptron([35] + hidden_layers + [2] + hidden_layers[::
 letters, labels = load_data_as_bin_array('inputs/font.json')
 # print(letters)
 autoencoder.train(letters, letters, 20000, 0.00005)
-latent_predictions = autoencoder.latent_feedforward(letters)
+
+# ej1a
+
+latent_predictions = autoencoder.feedforward_to_latent(letters)
 
 # print("a: ", letters[1].reshape(7, 5))
 # print("a_pred: ", np.around(autoencoder.predict(letters[1]).reshape(7, 5), 3))
 # print('MSE: {}'.format(autoencoder.mse(autoencoder.predict(letters[1]), letters[1])))
 # print(autoencoder.predict(letters[1]))
 
-predictions = np.around(autoencoder.predict(letters), 0)
+# predictions = np.around(autoencoder.predict(letters), 0)
 
-wrong_letters, wrong_predictions = is_same_letter(letters, predictions)
+# wrong_letters, wrong_predictions = is_same_letter(letters, predictions)
 
-for i in range(len(wrong_letters)):
-    print("Wrong letter: {}".format(labels[wrong_letters[i]]))
-    # print(letters[wrong_letters[i]].reshape(7,5).astype(int))
-    # print(wrong_predictions[i].reshape(7,5).astype(int))
-    # print()
+# for i in range(len(wrong_letters)):
+#     print("Wrong letter: {}".format(labels[wrong_letters[i]]))
+#     # print(letters[wrong_letters[i]].reshape(7,5).astype(int))
+#     # print(wrong_predictions[i].reshape(7,5).astype(int))
+#     # print()
 
-print_letters(letters, predictions)
+# print_letters(letters, predictions)
 
 # call the function. Use only the 2 PCs.
-biplot(latent_predictions, labels)
+# biplot(latent_predictions, labels)
 
+# fin ej1a
+
+# ej1d
+
+# plot 10 new letters
+for i in range (10):
+    x, y = np.random.random(), np.random.random()
+    new_letter = autoencoder.latent_predict(np.array([x, y]))
+    new_letter = np.array(new_letter).reshape(7, 5)
+    print_letter(new_letter, i)
+    biplot_with_new_letter(latent_predictions, labels, x, y, i)
+
+# print("new letters")
+# x, y = np.random.random(), np.random.random()
+
+# print("new coordinates: ({}, {})".format(x, y))
+
+
+# new_letter = autoencoder.latent_predict(np.array([x, y]))
+
+# new_letter = np.array(new_letter).reshape(7, 5)
+
+# print_letter(new_letter)
+
+# biplot_with_new_letter(latent_predictions, labels, x, y)
 
 # if len(wrong_letters) >= 0:
 #     for i in range(len(wrong_letters)):
