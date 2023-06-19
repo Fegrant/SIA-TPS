@@ -60,27 +60,19 @@ latent_predictions = autoencoder.feedforward_to_latent(letters)
 
 # ej1d
 
-# plot 10 new letters
-for i in range (10):
-    x, y = np.random.random(), np.random.random()
-    new_letter = autoencoder.latent_predict(np.array([x, y]))
-    new_letter = np.array(new_letter).reshape(7, 5)
-    print_letter(new_letter, i)
-    biplot_with_new_letter(latent_predictions, labels, x, y, i)
+print("new letters")
+x, y = np.random.random(), np.random.random()
 
-# print("new letters")
-# x, y = np.random.random(), np.random.random()
-
-# print("new coordinates: ({}, {})".format(x, y))
+print("new coordinates: ({}, {})".format(x, y))
 
 
-# new_letter = autoencoder.latent_predict(np.array([x, y]))
+new_letter = autoencoder.latent_predict(np.array([x, y]))
 
-# new_letter = np.array(new_letter).reshape(7, 5)
+new_letter = np.array(new_letter).reshape(7, 5)
 
-# print_letter(new_letter)
+print_letter(new_letter)
 
-# biplot_with_new_letter(latent_predictions, labels, x, y)
+biplot_with_new_letter(latent_predictions, labels, x, y)
 
 # if len(wrong_letters) >= 0:
 #     for i in range(len(wrong_letters)):

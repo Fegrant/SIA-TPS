@@ -22,7 +22,7 @@ def biplot(score, names):
     plt.show()
 
 
-def biplot_with_new_letter(score, names, x, y, index):
+def biplot_with_new_letter(score, names, x, y):
     xs = score[:,0] # projection on PC1
     ys = score[:,1] # projection on PC2
     #scalex = 1.0 / (xs.max() - xs.min())
@@ -43,4 +43,4 @@ def biplot_with_new_letter(score, names, x, y, index):
     ax.set_ylabel("PC{}".format(2), fontsize=14)
 
     plt.grid()
-    plt.savefig("biplot_{}.png".format(index))
+    plt.show()
