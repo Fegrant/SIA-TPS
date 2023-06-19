@@ -29,7 +29,7 @@ def biplot_with_new_letter(score, names, x, y):
     #scaley = 1.0 / (ys.max() - ys.min())
     scalex = 1.0
     scaley = 1.0
-    _, ax = plt.subplots(figsize=(10, 10))
+    _, ax = plt.subplots()
 
     # plot letters
     ax.scatter(xs * scalex, ys * scaley, color='b', alpha=0.5)
