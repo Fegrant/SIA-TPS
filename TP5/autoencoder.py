@@ -1,62 +1,108 @@
-from multilayer_perceptron import MultilayerPerceptron
-
-from utils.parser import *
-from config import load_config_multilayer
 import numpy as np
-import matplotlib.pyplot as plt
+import copy
 
-def is_same_letter(originals: list[float], predictions: list[float], max_errors=1):
-    wrong_letters = []
-    wrong_predictions = []
-    for i in range(len(originals)):
-        errors = 0
-        letter = originals[i]
-        letter_pred = predictions[i]
-        for j in range(len(letter)):
-            if letter[j] != int(letter_pred[j]):
-                errors += 1
-                if errors > max_errors:
-                    wrong_letters.append(i)
-                    wrong_predictions.append(letter_pred)
-                    break
-    return wrong_letters, wrong_predictions
+class MultilayerPerceptron:
+    def __init__(self, layer_sizes, momentum=None, adam_beta1=0.9, adam_beta2=0.999, adam_epsilon=1e-8):
+        self.num_layers = len(layer_sizes)
+        self.layer_sizes = layer_sizes
+        self.momentum = momentum
+        self.errors = []
 
-# letters, labels = load_data('inputs/font.json')
-# monocromatic_cmap = plt.get_cmap('binary')
-# plt.imshow(to_bin_array(letters[2]), cmap=monocromatic_cmap)
-# plt.show()
+        self.weights = [np.random.randn(self.layer_sizes[i], self.layer_sizes[i+1]) for i in range(self.num_layers - 1)]
+        self.biases = [np.zeros((1, self.layer_sizes[i+1])) for i in range(self.num_layers - 1)]
+        if self.momentum is not None:
+            self.prev_weights = [np.zeros((self.layer_sizes[i], self.layer_sizes[i+1])) for i in range(self.num_layers - 1)]
+            self.prev_biases = [np.zeros((1, self.layer_sizes[i+1])) for i in range(self.num_layers - 1)]
 
-autoencoder = MultilayerPerceptron([35, 22, 10, 2, 10, 22, 35], 0.9)
-letters, labels = load_data_as_bin_array('inputs/font.json')
-# print(letters)
-autoencoder.train(letters, letters, 20000, 0.005)
+        # Adam optimizer variables
+        self.adam_beta1 = adam_beta1
+        self.adam_beta2 = adam_beta2
+        self.adam_epsilon = adam_epsilon
+        self.m_weights = [np.zeros((self.layer_sizes[i], self.layer_sizes[i+1])) for i in range(self.num_layers - 1)]
+        self.v_weights = [np.zeros((self.layer_sizes[i], self.layer_sizes[i+1])) for i in range(self.num_layers - 1)]
+        self.m_biases = [np.zeros((1, self.layer_sizes[i+1])) for i in range(self.num_layers - 1)]
+        self.v_biases = [np.zeros((1, self.layer_sizes[i+1])) for i in range(self.num_layers - 1)]
+        
+    def sigmoid(self, x):
+        return 1 / (1 + np.exp(-x))
+    
+    def sigmoid_derivative(self, x):
+        return x * (1 - x)
+    
+    def feedforward(self, X):
+        self.activations = [X]
+        self.outputs = []
+        for i in range(self.num_layers - 1):
+            self.outputs.append(np.dot(self.activations[i], self.weights[i]) + self.biases[i])
+            self.activations.append(self.sigmoid(self.outputs[i]))
+        return self.activations[-1]
+    
+    def backpropagation(self, y, learning_rate):
+        error = y - self.activations[-1]
+        deltas = [error * self.sigmoid_derivative(self.activations[-1])]
+        for i in range(self.num_layers - 2, 0, -1):
+            delta = np.dot(deltas[-1], self.weights[i].T) * self.sigmoid_derivative(self.activations[i])
+            deltas.append(delta)
+        deltas.reverse()
 
-# print("a: ", letters[1].reshape(7, 5))
-# print("a_pred: ", np.around(autoencoder.predict(letters[1]).reshape(7, 5), 3))
-# print('MSE: {}'.format(autoencoder.mse(autoencoder.predict(letters[1]), letters[1])))
-# print(autoencoder.predict(letters[1]))
+        # Update weights and biases
+        for i in range(self.num_layers - 1):
+            grad_weights = np.dot(self.activations[i].T, deltas[i])
+            grad_biases = np.sum(deltas[i], axis=0, keepdims=True)
 
-wrong_letters, predictions = is_same_letter(letters, np.around(autoencoder.predict(letters), 0))
+            if self.momentum is not None:
+                delta_w = learning_rate * grad_weights + self.momentum * self.prev_weights[i]
+                delta_b = learning_rate * grad_biases + self.momentum * self.prev_biases[i]
+                self.weights[i] += delta_w
+                self.biases[i] += delta_b
+                self.prev_weights[i] = copy.deepcopy(delta_w)
+                self.prev_biases[i] = copy.deepcopy(delta_b)
+            elif self.adam_beta1 is not None and self.adam_beta2 is not None and self.adam_epsilon is not None:
+                # Adam optimizer update
+                self.m_weights[i] = self.adam_beta1 * self.m_weights[i] + (1 - self.adam_beta1) * grad_weights
+                self.v_weights[i] = self.adam_beta2 * self.v_weights[i] + (1 - self.adam_beta2) * np.square(grad_weights)
+                m_weights_hat = self.m_weights[i] / (1 - np.power(self.adam_beta1, self.epoch))
+                v_weights_hat = self.v_weights[i] / (1 - np.power(self.adam_beta2, self.epoch))
+                self.weights[i] += learning_rate * m_weights_hat / (np.sqrt(v_weights_hat) + self.adam_epsilon)
 
-print(wrong_letters)
+                self.m_biases[i] = self.adam_beta1 * self.m_biases[i] + (1 - self.adam_beta1) * grad_biases
+                self.v_biases[i] = self.adam_beta2 * self.v_biases[i] + (1 - self.adam_beta2) * np.square(grad_biases)
+                m_biases_hat = self.m_biases[i] / (1 - np.power(self.adam_beta1, self.epoch))
+                v_biases_hat = self.v_biases[i] / (1 - np.power(self.adam_beta2, self.epoch))
+                self.biases[i] += learning_rate * m_biases_hat / (np.sqrt(v_biases_hat) + self.adam_epsilon)
+            else:
+                self.weights[i] += learning_rate * grad_weights
+                self.biases[i] += learning_rate * grad_biases
+        
+    def train(self, X, y, epochs, learning_rate, convergence_threshold=0.01):
+        max_learning_rate = 0.003
+        min_learning_rate = 0.00075
+        for i in range(epochs):
+            self.epoch = i+1
+            epoch_learning_rate = min_learning_rate + (max_learning_rate - min_learning_rate) * ((epochs - i) / epochs)
+            if epoch_learning_rate < min_learning_rate:
+                epoch_learning_rate = min_learning_rate
+            self.feedforward(X)
+            self.backpropagation(y, epoch_learning_rate)
 
-# if len(wrong_letters) >= 0:
-#     for i in range(len(wrong_letters)):
-#         print('Wrong letter: {}'.format(labels[wrong_letters[i]]))
-#         print('Original:\n{}'.format(letters[wrong_letters[i]].reshape(7, 5)))
-#         print('Predicted:\n{}'.format(predictions[i].reshape(7, 5)))
-#         print()
-# else:
-#     print('All letters were guessed correctly')
+            self.errors.append(self.mse(y, self.activations[-1]))
+            if self.mse(y, self.predict(X)) < convergence_threshold:
+                print('Convergence reached at epoch ' + str(i + 1) + '.')
+                break
+        
+    def predict(self, X):
+        return self.feedforward(X)
 
-# print("b prediction")
-# print("b: ", autoencoder.predict(letters[2]))
-# print('MSE: {}'.format(autoencoder.mse(autoencoder.predict(letters[2]), letters[2])))
+    def mse(self, y_true, y_pred):
+        return np.mean(np.square(y_true - y_pred))
+    
+    def errors(self):
+        return self.errors
 
-# print("c prediction")
-# print("c: ", autoencoder.predict(letters[3]))
-# print('MSE: {}'.format(autoencoder.mse(autoencoder.predict(letters[3]), letters[3])))
-
-# print("d prediction")
-# print("d: ", autoencoder.predict(letters[4]))
-# print('MSE: {}'.format(autoencoder.mse(autoencoder.predict(letters[4]), letters[4])))
+    def latent_feedforward(self, X):
+        self.activations = [X]
+        self.outputs = []
+        for i in range(self.num_layers - 1):
+            self.outputs.append(np.dot(self.activations[i], self.weights[i]) + self.biases[i])
+            self.activations.append(self.sigmoid(self.outputs[i]))
+        return self.activations[int(self.num_layers/2)]
