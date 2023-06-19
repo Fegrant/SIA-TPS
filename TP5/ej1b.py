@@ -1,8 +1,9 @@
 from autoencoder import MultilayerPerceptron
 
-from utils.noise import add_noise
+from utils.noise import add_toggled_noise
 from utils.parser import *
 from utils.print_letter import *
+from utils.plots import biplot
 from config import load_config_multilayer
 import numpy as np
 import matplotlib.pyplot as plt
@@ -26,23 +27,22 @@ def is_same_letter(originals: list[float], predictions: list[float], max_errors=
     return wrong_letters, wrong_predictions
 
 
-hidden_layers = []
+hidden_layers = [28, 22, 17, 10]
 
-autoencoder = MultilayerPerceptron([35] + hidden_layers + [20] + hidden_layers[::-1] + [35], momentum=None)
+autoencoder = MultilayerPerceptron([35] + hidden_layers + [2] + hidden_layers[::-1] + [35], momentum=None)
 letters, labels = load_data_as_bin_array('inputs/font.json')
 
 # original_letters = copy.deepcopy(letters)
 
 # print(letters)
 
-noise_letters = add_noise(copy.deepcopy(letters), 0.1)
+noise_letters = add_toggled_noise(copy.deepcopy(letters), 0.1)
 
-autoencoder.train(np.array(noise_letters), letters, 60000, 0.0005)
-
+autoencoder.train(np.array(noise_letters), letters, 10000, 0.0005)
 
 # Test set of noising letters and predict with the autoencoder latent space
 
-test_noise = add_noise(copy.deepcopy(letters), 0.1)
+test_noise = add_toggled_noise(copy.deepcopy(letters), 0.1)
 
 predictions = np.around(autoencoder.predict(test_noise), 0)
 
@@ -54,5 +54,5 @@ for i in range(len(wrong_letters)):
     print()
 
 print_noise_letters(letters, noise_letters, predictions)
-
+# call the function. Use only the 2 PCs.
 
