@@ -21,7 +21,9 @@ Esto creará un nuevo entorno virtual, en el que se instalarán las dependencias
 ## Cómo Correr \TODO
 
 ```bash
-python 
+python ej1.py
+python ej1b.py
+python ej2.py
 ```
 
 
@@ -29,13 +31,22 @@ python
 
 ### Configuraciones Basicas
 
-**Nota: TODO**
 
 ```json5
 {
-  
+    "multilayer": {
+        "number_of_inputs": 35,
+        "hidden_layers": [15,2,15],
+        "number_of_outputs": 35,
+        "epochs" : 40000,
+        "learning_rate" : 0.005,
+        "beta": 0.001,
+        "momentum": 0.8
+    }
 }
 ```
 
-### Archivos de salida
+El campo de *hidden_layers* define la estrutura de la red, donde cada elemento del array representa una capa oculta, y el valor de cada elemento representa la cantidad de neuronas en dicha capa.
 
+### Archivos de salida
+Los archivos de salida son imagenes png generados por matplotlib y se muestran al finalizar la ejecución del programa.
