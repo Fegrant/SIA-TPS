@@ -9,6 +9,11 @@ matplotlib = "*"
 pandas = "*"
 scikit-learn = "*"
 sklearn = "*"
+graphviz = "*"
+plotly = "*"
+tensorflow = "*"
+pydot = "*"
+pydotplus = "*"
 
 [dev-packages]
 
