@@ -33,29 +33,38 @@ class VariationalAutoencoder:
     def sigmoid_derivative(self, x):
         return x * (1 - x)
     
+    def relu(self, x):
+        return np.maximum(0, x)
+    
+    def relu_derivative(self, x):
+        return (x > 0).astype(int)
+    
     def reparameterize(self, mean, logvar):
-        epsilon = np.random.randn(*mean.shape)
-        std_dev = np.exp(0.5 * logvar)
-        return mean + std_dev * epsilon
+        std = np.exp(0.5 * logvar)
+        epsilon = np.random.normal(size=std.shape)
+        return mean + std * epsilon
     
     def feedforward(self, X):
+        mean, logvar = self.encode(X)
+        latent = self.reparameterize(mean, logvar)
+        return self.decoder(latent)
+    
+    # Returns mean and logvar until the halfway layer
+    def encode(self, X):
         self.activations = [X]
         self.outputs = []
-        for i in range(self.num_layers - 1):
+        for i in range(int(self.num_layers/2) + 1):
             self.outputs.append(np.dot(self.activations[i], self.weights[i]) + self.biases[i])
             self.activations.append(self.sigmoid(self.outputs[i]))
-        return self.activations[-1]
-    
-    def encode(self, X):
-        self.feedforward(X)
         self.mean_layer = self.activations[int(self.num_layers/2)]
-        self.logvar_layer = self.activations[int(self.num_layers/2) + 1]
+        self.logvar_layer = self.activations[int(self.num_layers/2)]
         return self.mean_layer, self.logvar_layer
     
+    # given a mean and logvar vector generates a latent vector and passes it through the decoder
     def decode(self, z):
         self.activations = [z]
         self.outputs = []
-        start_layer = int(self.num_layers/2) + 1
+        start_layer = int(self.num_layers/2)
         for i in range(start_layer, self.num_layers - 1):
             self.outputs.append(np.dot(self.activations[i - start_layer], self.weights[i]) + self.biases[i])
             self.activations.append(self.sigmoid(self.outputs[i - start_layer]))
